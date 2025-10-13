@@ -1,0 +1,12 @@
+{
+    "name": "FiscalBR",
+    "alias": "Fiscal Brasileiro",
+    "description": "Módulo para emissão de documentos fiscais (NF-e, NFC-e, NFS-e) e geração de obrigações acessórias (SPED) em conformidade com a legislação brasileira.",
+    "priority": 10,
+    "version": "1.0.0",
+    "monthly_price": 30,
+    "yearly_price": 300,
+    "child_module": [],
+    "package_name": "fiscalbr"
+}
+

@@ -1,0 +1,28 @@
+{
+    "name": "workdo/fiscalbr",
+    "description": "Módulo de compliance fiscal brasileiro para WorkDo Dash SaaS.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Workdo\\FiscalBR\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "JRacing Dev",
+            "email": "joelson@jracing.dev.br"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Workdo\\FiscalBR\\Providers\\FiscalBRServiceProvider"
+            ]
+        }
+    }
+}
+
