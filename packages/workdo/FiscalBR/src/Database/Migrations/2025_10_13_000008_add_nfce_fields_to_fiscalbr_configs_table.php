@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::table('fiscalbr_configs', function (Blueprint $table) {
             if (!Schema::hasColumn('fiscalbr_configs', 'serie_nfce')) {
-                $table->string('serie_nfce', 3)->default('1')->after('serie_nfe');
+                $table->string('serie_nfce', 3)->default('1');
             }
             if (!Schema::hasColumn('fiscalbr_configs', 'ultimo_numero_nfce')) {
-                $table->integer('ultimo_numero_nfce')->default(0)->after('ultimo_numero_nfe');
+                $table->integer('ultimo_numero_nfce')->default(0);
             }
             if (!Schema::hasColumn('fiscalbr_configs', 'csc')) {
-                $table->string('csc', 100)->nullable()->after('ultimo_numero_nfce');
+                $table->string('csc', 100)->nullable();
             }
             if (!Schema::hasColumn('fiscalbr_configs', 'csc_id')) {
-                $table->string('csc_id', 10)->default('1')->after('csc');
+                $table->string('csc_id', 10)->default('1');
             }
         });
     }
