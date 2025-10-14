@@ -7,6 +7,7 @@ use Workdo\FiscalBR\Http\Controllers\NFeController;
 use Workdo\FiscalBR\Http\Controllers\NFCeController;
 use Workdo\FiscalBR\Http\Controllers\SpedController;
 use Workdo\FiscalBR\Http\Controllers\NFSeController;
+use Workdo\FiscalBR\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,6 +76,16 @@ Route::group(['middleware' => ['web', 'auth', 'verified', 'PlanModuleCheck:Fisca
         Route::get('/{id}/consultar', [NFSeController::class, 'consultar'])->name('consultar');
         Route::get('/{id}/xml', [NFSeController::class, 'downloadXml'])->name('xml');
         Route::get('/{id}/pdf', [NFSeController::class, 'pdf'])->name('pdf');
+    });
+    
+    // Relatórios Fiscais
+    Route::prefix('fiscalbr/reports')->name('fiscalbr.reports.')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('index');
+        Route::get('/nfe', [ReportController::class, 'nfe'])->name('nfe');
+        Route::get('/nfce', [ReportController::class, 'nfce'])->name('nfce');
+        Route::get('/sped', [ReportController::class, 'sped'])->name('sped');
+        Route::get('/nfse', [ReportController::class, 'nfse'])->name('nfse');
+        Route::post('/export', [ReportController::class, 'export'])->name('export');
     });
 });
 

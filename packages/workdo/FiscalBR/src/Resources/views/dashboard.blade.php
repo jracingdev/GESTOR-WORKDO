@@ -22,7 +22,7 @@
                             </div>
                             <div class="text-end">
                                 <h6 class="mb-1">{{ __('NF-e Emitidas') }}</h6>
-                                <h3 class="mb-0">0</h3>
+                                <h3 class="mb-0">{{ $nfe_emitidas }}</h3>
                             </div>
                         </div>
                     </div>
@@ -39,7 +39,7 @@
                             </div>
                             <div class="text-end">
                                 <h6 class="mb-1">{{ __('NFC-e Emitidas') }}</h6>
-                                <h3 class="mb-0">0</h3>
+                                <h3 class="mb-0">{{ $nfce_emitidas }}</h3>
                             </div>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                             </div>
                             <div class="text-end">
                                 <h6 class="mb-1">{{ __('Valor Total') }}</h6>
-                                <h3 class="mb-0">R$ 0,00</h3>
+                                <h3 class="mb-0">R$ {{ number_format($valor_total, 2, ',', '.') }}</h3>
                             </div>
                         </div>
                     </div>
@@ -73,7 +73,7 @@
                             </div>
                             <div class="text-end">
                                 <h6 class="mb-1">{{ __('Pendentes') }}</h6>
-                                <h3 class="mb-0">0</h3>
+                                <h3 class="mb-0">{{ $pendentes }}</h3>
                             </div>
                         </div>
                     </div>
@@ -138,9 +138,51 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @forelse($ultimas_notas as $nota)
+                                    <tr>
+                                        <td>{{ $nota->numero }}</td>
+                                        <td>
+                                            @if($nota->modelo == '55')
+                                                <span class="badge bg-primary">NF-e</span>
+                                            @elseif($nota->modelo == '65')
+                                                <span class="badge bg-info">NFC-e</span>
+                                            @else
+                                                <span class="badge bg-secondary">{{ $nota->modelo }}</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ $nota->destinatario_nome ?? 'CONSUMIDOR' }}</td>
+                                        <td>R$ {{ number_format($nota->valor_total, 2, ',', '.') }}</td>
+                                        <td>
+                                            @if($nota->status == 'autorizada')
+                                                <span class="badge bg-success">Autorizada</span>
+                                            @elseif($nota->status == 'cancelada')
+                                                <span class="badge bg-danger">Cancelada</span>
+                                            @elseif($nota->status == 'rejeitada')
+                                                <span class="badge bg-warning">Rejeitada</span>
+                                            @elseif($nota->status == 'processando')
+                                                <span class="badge bg-info">Processando</span>
+                                            @else
+                                                <span class="badge bg-secondary">{{ ucfirst($nota->status) }}</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ $nota->created_at->format('d/m/Y H:i') }}</td>
+                                        <td>
+                                            @if($nota->modelo == '55')
+                                                <a href="{{ route('fiscalbr.nfe.show', $nota->id) }}" class="btn btn-sm btn-primary">
+                                                    <i class="ti ti-eye"></i>
+                                                </a>
+                                            @elseif($nota->modelo == '65')
+                                                <a href="{{ route('fiscalbr.nfce.show', $nota->id) }}" class="btn btn-sm btn-info">
+                                                    <i class="ti ti-eye"></i>
+                                                </a>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @empty
                                     <tr>
                                         <td colspan="7" class="text-center">{{ __('Nenhuma nota fiscal encontrada') }}</td>
                                     </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
