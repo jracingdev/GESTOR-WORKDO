@@ -1287,4 +1287,3 @@ class UserController extends Controller
             return redirect()->back()->with("error", __("Permission denied."));
         }
     }
-
