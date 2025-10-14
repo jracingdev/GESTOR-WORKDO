@@ -1278,3 +1278,15 @@ class UserController extends Controller
         return redirect()->back()->with('success', $msg);
     }
 }
+
+
+    public function mapView()
+    {
+        if (\Auth::user()->isAbleTo("user manage")) {
+            $users = User::whereNotNull("latitude")->whereNotNull("longitude")->get();
+            return view("users.map", compact("users"));
+        } else {
+            return redirect()->back()->with("error", __("Permission denied."));
+        }
+    }
+

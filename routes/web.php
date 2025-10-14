@@ -127,7 +127,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::any('user-reset-password/{id}', [UserController::class, 'UserPassword'])->name('users.reset');
     Route::get('user-login/{id}', [UserController::class, 'LoginManage'])->name('users.login');
     Route::post('user-reset-password/{id}', [UserController::class, 'UserPasswordReset'])->name('user.password.update');
-    Route::get('users/{id}/login-with-company', [UserController::class, 'LoginWithCompany'])->name('login.with.company');
+    Route::get("users/{id}/login-with-company", [UserController::class, "LoginWithCompany"])->name("login.with.company");
+    Route::get("users/map", [UserController::class, "mapView"])->name("users.map");
     Route::get('company-info/{id}', [UserController::class, 'CompnayInfo'])->name('company.info');
     Route::post('user-unable', [UserController::class, 'UserUnable'])->name('user.unable');
     Route::get('user-verified/{id}', [UserController::class, 'verifeduser'])->name('user.verified');

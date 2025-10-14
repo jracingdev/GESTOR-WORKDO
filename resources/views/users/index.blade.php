@@ -28,9 +28,13 @@
             </a>
         @endpermission
         @permission('user manage')
-            <a href="{{ route('users.list.view') }}" data-bs-toggle="tooltip" data-bs-original-title="{{ __('List View') }}"
+            <a href="{{ route("users.list.view") }}" data-bs-toggle="tooltip" data-bs-original-title="{{ __("List View") }}"
                 class="btn btn-sm btn-primary btn-icon me-2">
                 <i class="ti ti-list"></i>
+            </a>
+            <a href="{{ route("users.map") }}" data-bs-toggle="tooltip" data-bs-original-title="{{ __("Ver clientes no mapa") }}"
+                class="btn btn-sm btn-primary btn-icon me-2">
+                <i class="ti ti-map"></i>
             </a>
         @endpermission
         @if (Auth::user()->type == 'super admin')
