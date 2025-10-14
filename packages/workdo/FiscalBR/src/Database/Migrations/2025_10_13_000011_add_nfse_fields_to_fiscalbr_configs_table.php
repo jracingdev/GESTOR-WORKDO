@@ -13,20 +13,48 @@ return new class extends Migration
     {
         Schema::table('fiscalbr_configs', function (Blueprint $table) {
             // NFS-e Configuration
-            $table->string('inscricao_municipal', 20)->nullable()->after('inscricao_estadual');
-            $table->string('codigo_municipio', 7)->nullable()->after('inscricao_municipal'); // Código IBGE
-            $table->string('nfse_serie_rps', 5)->default('1')->after('codigo_municipio');
-            $table->integer('nfse_ultimo_numero_rps')->default(0)->after('nfse_serie_rps');
-            $table->string('nfse_provedor', 50)->nullable()->after('nfse_ultimo_numero_rps'); // ABRASF, GINFES, etc
-            $table->string('nfse_versao', 10)->nullable()->after('nfse_provedor'); // Versão do webservice
-            $table->string('nfse_usuario', 100)->nullable()->after('nfse_versao'); // Usuário da prefeitura
-            $table->text('nfse_senha')->nullable()->after('nfse_usuario'); // Senha (criptografada)
-            $table->string('nfse_regime_especial', 1)->nullable()->after('nfse_senha');
-            $table->string('nfse_optante_simples', 1)->default('2')->after('nfse_regime_especial'); // 1=Sim, 2=Não
-            $table->string('nfse_incentivador_cultural', 1)->default('2')->after('nfse_optante_simples'); // 1=Sim, 2=Não
-            $table->decimal('nfse_aliquota_iss', 5, 2)->default(0)->after('nfse_incentivador_cultural');
-            $table->string('nfse_item_lista_servico', 10)->nullable()->after('nfse_aliquota_iss'); // Item padrão da lista
-            $table->string('nfse_codigo_cnae', 10)->nullable()->after('nfse_item_lista_servico');
+            if (!Schema::hasColumn('fiscalbr_configs', 'inscricao_municipal')) {
+                $table->string('inscricao_municipal', 20)->nullable();
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'codigo_municipio')) {
+                $table->string('codigo_municipio', 7)->nullable(); // Código IBGE
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'nfse_serie_rps')) {
+                $table->string('nfse_serie_rps', 5)->default('1');
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'nfse_ultimo_numero_rps')) {
+                $table->integer('nfse_ultimo_numero_rps')->default(0);
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'nfse_provedor')) {
+                $table->string('nfse_provedor', 50)->nullable(); // ABRASF, GINFES, etc
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'nfse_versao')) {
+                $table->string('nfse_versao', 10)->nullable(); // Versão do webservice
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'nfse_usuario')) {
+                $table->string('nfse_usuario', 100)->nullable(); // Usuário da prefeitura
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'nfse_senha')) {
+                $table->text('nfse_senha')->nullable(); // Senha (criptografada)
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'nfse_regime_especial')) {
+                $table->string('nfse_regime_especial', 1)->nullable();
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'nfse_optante_simples')) {
+                $table->string('nfse_optante_simples', 1)->default('2'); // 1=Sim, 2=Não
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'nfse_incentivador_cultural')) {
+                $table->string('nfse_incentivador_cultural', 1)->default('2'); // 1=Sim, 2=Não
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'nfse_aliquota_iss')) {
+                $table->decimal('nfse_aliquota_iss', 5, 2)->default(0);
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'nfse_item_lista_servico')) {
+                $table->string('nfse_item_lista_servico', 10)->nullable(); // Item padrão da lista
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'nfse_codigo_cnae')) {
+                $table->string('nfse_codigo_cnae', 10)->nullable();
+            }
         });
     }
 
@@ -36,7 +64,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('fiscalbr_configs', function (Blueprint $table) {
-            $table->dropColumn([
+            $columns = [
                 'inscricao_municipal',
                 'codigo_municipio',
                 'nfse_serie_rps',
@@ -51,7 +79,13 @@ return new class extends Migration
                 'nfse_aliquota_iss',
                 'nfse_item_lista_servico',
                 'nfse_codigo_cnae',
-            ]);
+            ];
+
+            foreach ($columns as $column) {
+                if (Schema::hasColumn('fiscalbr_configs', $column)) {
+                    $table->dropColumn($column);
+                }
+            }
         });
     }
 };
