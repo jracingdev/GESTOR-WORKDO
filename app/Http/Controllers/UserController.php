@@ -1277,8 +1277,6 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', $msg);
     }
-}
-
 
     public function mapView()
     {
