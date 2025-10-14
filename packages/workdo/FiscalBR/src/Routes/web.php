@@ -6,6 +6,7 @@ use Workdo\FiscalBR\Http\Controllers\ConfigController;
 use Workdo\FiscalBR\Http\Controllers\NFeController;
 use Workdo\FiscalBR\Http\Controllers\NFCeController;
 use Workdo\FiscalBR\Http\Controllers\SpedController;
+use Workdo\FiscalBR\Http\Controllers\NFSeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +62,19 @@ Route::group(['middleware' => ['web', 'auth', 'verified', 'PlanModuleCheck:Fisca
         Route::get('/{id}/download', [SpedController::class, 'download'])->name('download');
         Route::post('/{id}/enviar-contabilidade', [SpedController::class, 'enviarContabilidade'])->name('enviar_contabilidade');
         Route::delete('/{id}', [SpedController::class, 'destroy'])->name('destroy');
+    });
+    
+    // NFS-e
+    Route::prefix('fiscalbr/nfse')->name('fiscalbr.nfse.')->group(function () {
+        Route::get('/', [NFSeController::class, 'index'])->name('index');
+        Route::get('/create', [NFSeController::class, 'create'])->name('create');
+        Route::post('/store', [NFSeController::class, 'store'])->name('store');
+        Route::get('/{id}', [NFSeController::class, 'show'])->name('show');
+        Route::post('/{id}/transmitir', [NFSeController::class, 'transmitir'])->name('transmitir');
+        Route::post('/{id}/cancelar', [NFSeController::class, 'cancelar'])->name('cancelar');
+        Route::get('/{id}/consultar', [NFSeController::class, 'consultar'])->name('consultar');
+        Route::get('/{id}/xml', [NFSeController::class, 'downloadXml'])->name('xml');
+        Route::get('/{id}/pdf', [NFSeController::class, 'pdf'])->name('pdf');
     });
 });
 
