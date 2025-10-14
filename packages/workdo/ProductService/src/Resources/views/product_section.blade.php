@@ -82,12 +82,85 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group col-md-12">
-                                {{ Form::label('description', __('Description'), ['class' => 'form-label']) }}
-                                {!! Form::textarea('description', !empty($productService->description)?$productService->description:'', ['class' => 'form-control', 'rows' => '2', 'placeholder' => __('Enter Description')]) !!}
+                            <div class="fo                                {{ Form::label('description', __('Description'), ['class' => 'form-label']) }}
+                                {!! Form::textarea('description', !empty($productService->description)?$productService->description:'',
+                                    ['class' => 'form-control', 'rows' => '2', 'placeholder' => __('Enter Description')]) !!}
                             </div>
 
-                            {{-- if warranty add on active then warrantyfill add --}}
+                            <hr class="mt-4 mb-4">
+                            <h5 class="mb-3">{{ __('Informações Fiscais (Módulo FiscalBR)') }}</h5>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('cfop', __('CFOP'), ['class' => 'form-label']) }}
+                                    {{ Form::text('cfop', !empty($productService->cfop)?$productService->cfop:'',
+                                        ['class' => 'form-control', 'placeholder' => __('Código Fiscal de Operações e Prestações')]) }}
+                                </div>
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('ncm', __('NCM'), ['class' => 'form-label']) }}
+                                    {{ Form::text('ncm', !empty($productService->ncm)?$productService->ncm:'',
+                                        ['class' => 'form-control', 'placeholder' => __('Nomenclatura Comum do Mercosul')]) }}
+                                </div>
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('cest', __('CEST'), ['class' => 'form-label']) }}
+                                    {{ Form::text('cest', !empty($productService->cest)?$productService->cest:'',
+                                        ['class' => 'form-control', 'placeholder' => __('Código Especificador da ST')]) }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('cst_icms', __('CST ICMS'), ['class' => 'form-label']) }}
+                                    {{ Form::text('cst_icms', !empty($productService->cst_icms)?$productService->cst_icms:'',
+                                        ['class' => 'form-control', 'placeholder' => __('CST ICMS')]) }}
+                                </div>
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('csosn', __('CSOSN'), ['class' => 'form-label']) }}
+                                    {{ Form::text('csosn', !empty($productService->csosn)?$productService->csosn:'',
+                                        ['class' => 'form-control', 'placeholder' => __('CSOSN')]) }}
+                                </div>
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('aliquota_icms', __('Alíquota ICMS (%)'), ['class' => 'form-label']) }}
+                                    {{ Form::number('aliquota_icms', !empty($productService->aliquota_icms)?$productService->aliquota_icms:'0.00',
+                                        ['class' => 'form-control', 'step' => '0.01', 'placeholder' => __('Alíquota ICMS')]) }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('cst_pis', __('CST PIS'), ['class' => 'form-label']) }}
+                                    {{ Form::text('cst_pis', !empty($productService->cst_pis)?$productService->cst_pis:'',
+                                        ['class' => 'form-control', 'placeholder' => __('CST PIS')]) }}
+                                </div>
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('aliquota_pis', __('Alíquota PIS (%)'), ['class' => 'form-label']) }}
+                                    {{ Form::number('aliquota_pis', !empty($productService->aliquota_pis)?$productService->aliquota_pis:'0.00',
+                                        ['class' => 'form-control', 'step' => '0.01', 'placeholder' => __('Alíquota PIS')]) }}
+                                </div>
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('cst_cofins', __('CST COFINS'), ['class' => 'form-label']) }}
+                                    {{ Form::text('cst_cofins', !empty($productService->cst_cofins)?$productService->cst_cofins:'',
+                                        ['class' => 'form-control', 'placeholder' => __('CST COFINS')]) }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('aliquota_cofins', __('Alíquota COFINS (%)'), ['class' => 'form-label']) }}
+                                    {{ Form::number('aliquota_cofins', !empty($productService->aliquota_cofins)?$productService->aliquota_cofins:'0.00',
+                                        ['class' => 'form-control', 'step' => '0.01', 'placeholder' => __('Alíquota COFINS')]) }}
+                                </div>
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('unidade_comercial', __('Unidade Comercial'), ['class' => 'form-label']) }}
+                                    {{ Form::text('unidade_comercial', !empty($productService->unidade_comercial)?$productService->unidade_comercial:'UN',
+                                        ['class' => 'form-control', 'placeholder' => __('Unidade Comercial')]) }}
+                                </div>
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('codigo_ean', __('Código EAN'), ['class' => 'form-label']) }}
+                                    {{ Form::text('codigo_ean', !empty($productService->codigo_ean)?$productService->codigo_ean:'',
+                                        ['class' => 'form-control', 'placeholder' => __('Código de Barras EAN')]) }}
+                                </div>
+                            </div>               {{-- if warranty add on active then warrantyfill add --}}
                             @stack('warranty-fileds')
 
                             @if (module_is_active('CustomField') && !$customFields->isEmpty())

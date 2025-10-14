@@ -13,8 +13,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
         use HasFactory;
 
         protected $fillable = [
-            'name','sku','sale_price','purchase_price','tax_id','category_id','description','type', 'icon', 'parent_id', 'sort_order', 'route', 'is_visible','quantity', 'permissions', 'module','image','unit_id','sale_chartaccount_id','expense_chartaccount_id','workspace_id','created_by'
-    ];
+            'name','sku','sale_price','purchase_price','tax_id','category_id','description','type', 'icon', 'parent_id', 'sort_order', 'route', 'is_visible','quantity', 'permissions', 'module','image','unit_id','sale_chartaccount_id','expense_chartaccount_id','workspace_id','created_by',
+            // Campos fiscais
+            'cfop',
+            'ncm',
+            'cest',
+            'cst_icms',
+            'csosn',
+            'aliquota_icms',
+            'valor_icms',
+            'base_calculo_icms',
+            'cst_pis',
+            'aliquota_pis',
+            'valor_pis',
+            'cst_cofins',
+            'aliquota_cofins',
+            'valor_cofins',
+            'unidade_comercial',
+            'codigo_ean',
+        ];
     public static $product_type =
     [
         'product'    => 'Products',
