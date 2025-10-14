@@ -35,86 +35,96 @@ class UserController extends Controller
     public function index(Request $request)
     {
 
-        if(Auth::user()->isAbleTo('user manage'))
+        if(Auth::user()->isAbleTo("user manage"))
         {
-            if(Auth::user()->type == 'super admin')
+            if(Auth::user()->type == "super admin")
             {
                 $roles =[];
-                $users = User::where('type','company')->paginate(11);
+                $users = User::where("type","company");
+
+                if($request->name)
+                {
+                    $users->where("name", "like", "%" . $request->name . "%");
+                }
+                if($request->email)
+                {
+                    $users->where("email", "like", "%" . $request->email . "%");
+                }
+                if($request->cnpj)
+                {
+                    $users->where("cnpj", "like", "%" . $request->cnpj . "%");
+                }
+                if($request->celular)
+                {
+                    $users->where("celular", "like", "%" . $request->celular . "%");
+                }
+                if($request->cidade)
+                {
+                    $users->where("cidade", "like", "%" . $request->cidade . "%");
+                }
+                if($request->estado)
+                {
+                    $users->where("estado", "like", "%" . $request->estado . "%");
+                }
+                if($request->status !== null && $request->status !== "")
+                {
+                    $users->where("is_disable", $request->status == "1" ? 0 : 1);
+                }
+                $users = $users->paginate(11);
             }
             else
             {
-                $roles = Role::where('created_by',creatorId())->pluck('name','id')->map(function ($name) {
+                $roles = Role::where("created_by",creatorId())->pluck("name","id")->map(function ($name) {
                     return ucfirst($name);
                 });
-                if(Auth::user()->isAbleTo('workspace manage'))
+                if(Auth::user()->isAbleTo("workspace manage"))
                 {
-                    $users = User::where('created_by',creatorId())->where('workspace_id',getActiveWorkSpace());
+                    $users = User::where("created_by",creatorId())->where("workspace_id",getActiveWorkSpace());
                 }
                 else
                 {
-                    $users = User::where('created_by',creatorId());
+                    $users = User::where("created_by",creatorId());
                 }
 
                 if($request->name)
                 {
-                    $users->where('name', 'like', '%' . $request->name . '%');
+                    $users->where("name", "like", "%" . $request->name . "%");
                 }
                 if($request->email)
                 {
-                    $users->where('email', 'like', '%' . $request->email . '%');
+                    $users->where("email", "like", "%" . $request->email . "%");
                 }
                 if($request->role)
                 {
                     $role = Role::find($request->role);
-                    $users = $users->where('type',$role->name);
-                }
-                if($request->cnpj)
-                {
-                    $users->where('cnpj', 'like', '%' . $request->cnpj . '%');
-                }
-                if($request->celular)
-                {
-                    $users->where('celular', 'like', '%' . $request->celular . '%');
-                }
-                if($request->cidade)
-                {
-                    $users->where('endereco_completo', 'like', '%' . $request->cidade . '%');
-                }
-                if($request->estado)
-                {
-                    $users->where('endereco_completo', 'like', '%' . $request->estado . '%');
-                }
-                if($request->status !== null && $request->status !== '')
-                {
-                    $users->where('is_disable', $request->status == '1' ? 0 : 1);
+                    $users = $users->where("type",$role->name);
                 }
                 $users = $users->paginate(11);
             }
-            return view('users.index',compact('users','roles'));
+            return view("users.index",compact("users","roles"));
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with("error", __("Permission denied."));
         }
     }
 
     public function List(UsersDataTable $dataTable)
     {
-        if(Auth::user()->isAbleTo('user manage'))
+        if(Auth::user()->isAbleTo("user manage"))
         {
             $roles = [];
-            if(Auth::user()->type != 'super admin')
+            if(Auth::user()->type != "super admin")
             {
-                $roles = Role::where('created_by',creatorId())->pluck('name','id')->map(function ($name) {
+                $roles = Role::where("created_by",creatorId())->pluck("name","id")->map(function ($name) {
                     return ucfirst($name);
                 });
             }
-            return $dataTable->render('users.list',compact('roles'));
+            return $dataTable->render("users.list",compact("roles"));
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with("error", __("Permission denied."));
         }
     }
     /**
@@ -124,14 +134,14 @@ class UserController extends Controller
      */
     public function create()
     {
-        if(Auth::user()->isAbleTo('user create'))
+        if(Auth::user()->isAbleTo("user create"))
         {
-            $roles = Role::where('created_by',creatorId())->pluck('name','id');
-            return view('users.create',compact('roles'));
+            $roles = Role::where("created_by",creatorId())->pluck("name","id");
+            return view("users.create",compact("roles"));
         }
         else
         {
-            return response()->json(['error' => __('Permission denied.')], 401);
+            return response()->json(["error" => __("Permission denied.")], 401);
         }
     }
 
@@ -143,32 +153,37 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        if(Auth::user()->isAbleTo('user create'))
+        if(Auth::user()->isAbleTo("user create"))
         {
-            if(Auth::user()->type != 'super admin'){
-                $canUse=  PlanCheck('User',Auth::user()->id);
+            if(Auth::user()->type != "super admin"){
+                $canUse=  PlanCheck("User",Auth::user()->id);
                 if($canUse == false)
                 {
-                    return redirect()->back()->with('error', __('You have maxed out the total number of User allowed on your current plan'));
+                    return redirect()->back()->with("error", __("You have maxed out the total number of User allowed on your current plan"));
                 }
             }
-            if (Auth::user()->type == 'super admin') {
+            if (Auth::user()->type == "super admin") {
                 $validatorArray = [
-                    'name' => 'required|max:120',
-                    'email' => ['required', 'email',
-                        Rule::unique('users')->where(function ($query) {
-                            return $query->where('created_by', creatorId());
+                    "name" => "required|max:120",
+                    "email" => ["required", "email",
+                        Rule::unique("users")->where(function ($query) {
+                            return $query->where("created_by", creatorId());
                         })
                     ],
+                    "cnpj" => "nullable|string|max:18",
+                    "inscricao_estadual" => "nullable|string|max:20",
+                    "celular" => "nullable|string|max:15",
+                    "cidade" => "nullable|string|max:255",
+                    "estado" => "nullable|string|max:2",
                 ];
             } else {
                 $validatorArray = [
-                    'name' => 'required|max:120',
-                    'roles' => 'required|exists:roles,id',
-                    'email' => ['required', 'email',
-                        Rule::unique('users')->where(function ($query) {
-                            return $query->where('created_by', creatorId())
-                                         ->where('workspace_id', getActiveWorkSpace());
+                    "name" => "required|max:120",
+                    "roles" => "required|exists:roles,id",
+                    "email" => ["required", "email",
+                        Rule::unique("users")->where(function ($query) {
+                            return $query->where("created_by", creatorId())
+                                         ->where("workspace_id", getActiveWorkSpace());
                         })
                     ],
                 ];
@@ -178,86 +193,79 @@ class UserController extends Controller
 
             if($validator->fails())
             {
-                return redirect()->back()->with('error', $validator->errors()->first());
+                return redirect()->back()->with("error", $validator->errors()->first());
             }
-            $user['is_enable_login']       = 0;
-            if(!empty($request->password_switch) && $request->password_switch == 'on')
+            $user["is_enable_login"]       = 0;
+            if(!empty($request->password_switch) && $request->password_switch == "on")
             {
-                $user['is_enable_login']   = 1;
+                $user["is_enable_login"]   = 1;
                 $validator = Validator::make(
-                    $request->all(), ['password' => 'required|min:6']
+                    $request->all(), ["password" => "required|min:6"]
                 );
 
                 if($validator->fails())
                 {
-                    return redirect()->back()->with('error', $validator->errors()->first());
+                    return redirect()->back()->with("error", $validator->errors()->first());
                 }
 
-                $userpassword               = $request->input('password');
+                $userpassword               = $request->input("password");
             }
-            if($request->input('mobile_no')){
-                $validator = Validator::make(
-                    $request->all(), ['mobile_no' => 'nullable|regex:/^\+\d{1,3}\d{9,13}$/',]
-                );
-                if($validator->fails())
-                {
-                    return redirect()->back()->with('error', $validator->errors()->first());
-                }
-            }
-            if(Auth::user()->type == 'super admin')
+
+            if(Auth::user()->type == "super admin")
             {
-                $roles = Role::where('name','company')->first();
+                $roles = Role::where("name","company")->first();
             }
             else
             {
-                $roles = Role::find($request->input('roles'));
+                $roles = Role::find($request->input("roles"));
             }
             $company_settings = getCompanyAllSetting();
 
 
-            $user['name']               = $request->input('name');
-            $user['email']              = $request->input('email');
-            $user['mobile_no']          = $request->input('mobile_no');
-            $user['password']           = !empty($userpassword) ? \Hash::make($userpassword) : null;
-            $user['lang']               = !empty($company_settings['defult_language']) ? $company_settings['defult_language'] : 'en';
-            $user['type']               = $roles->name;
-            $user['created_by']         = creatorId();
-            $user['workspace_id']       = getActiveWorkSpace();
-            $user['active_workspace']   = getActiveWorkSpace();
+            $user["name"]               = $request->input("name");
+            $user["email"]              = $request->input("email");
+            $user["password"]           = !empty($userpassword) ? \Hash::make($userpassword) : null;
+            $user["lang"]               = !empty($company_settings["defult_language"]) ? $company_settings["defult_language"] : "en";
+            $user["type"]               = $roles->name;
+            $user["created_by"]         = creatorId();
+            $user["workspace_id"]       = getActiveWorkSpace();
+            $user["active_workspace"]   = getActiveWorkSpace();
             
             // New customer fields
-            $user['cnpj']               = $request->input('cnpj');
-            $user['inscricao_estadual'] = $request->input('inscricao_estadual');
-            $user['celular']            = $request->input('celular');
-            $user['informacoes_credito'] = $request->input('informacoes_credito');
-            $user['latitude']           = $request->input('latitude');
-            $user['longitude']          = $request->input('longitude');
+            $user["cnpj"]               = $request->input("cnpj");
+            $user["inscricao_estadual"] = $request->input("inscricao_estadual");
+            $user["celular"]            = $request->input("celular");
+            $user["informacoes_credito"] = $request->input("informacoes_credito");
+            $user["latitude"]           = $request->input("latitude");
+            $user["longitude"]          = $request->input("longitude");
+            $user["cidade"]             = $request->input("cidade");
+            $user["estado"]             = $request->input("estado");
             
             // Handle photo upload
-            if($request->hasFile('foto')) {
-                $foto = $request->file('foto');
-                $fotoName = time() . '_' . $foto->getClientOriginalName();
-                $fotoPath = $foto->storeAs('customers/photos', $fotoName, 'public');
-                $user['caminho_foto'] = $fotoPath;
+            if($request->hasFile("foto")) {
+                $foto = $request->file("foto");
+                $fotoName = time() . "_" . $foto->getClientOriginalName();
+                $fotoPath = $foto->storeAs("customers/photos", $fotoName, "public");
+                $user["caminho_foto"] = $fotoPath;
             }
             
             // Handle documents upload
-            if($request->hasFile('documentos')) {
+            if($request->hasFile("documentos")) {
                 $documentos = [];
-                foreach($request->file('documentos') as $documento) {
-                    $docName = time() . '_' . $documento->getClientOriginalName();
-                    $docPath = $documento->storeAs('customers/documents', $docName, 'public');
+                foreach($request->file("documentos") as $documento) {
+                    $docName = time() . "_" . $documento->getClientOriginalName();
+                    $docPath = $documento->storeAs("customers/documents", $docName, "public");
                     $documentos[] = $docPath;
                 }
-                $user['caminho_documentos'] = json_encode($documentos);
+                $user["caminho_documentos"] = json_encode($documentos);
             }
             
             $user = User::create($user);
-            if(Auth::user()->type == 'super admin')
+            if(Auth::user()->type == "super admin")
             {
                     do {
                         $code = rand(100000, 999999);
-                    } while (User::where('referral_code', $code)->exists());
+                    } while (User::where("referral_code", $code)->exists());
 
                 $company = User::find($user->id);
 
@@ -272,24 +280,59 @@ class UserController extends Controller
                 $company->workspace_id = $workspace->id;
                 $company->save();
 
-                event(new CreateUser($user,$request->input('roles')));
+                // make entry in user_workspaces table
+                User::AddUserToWorkspaces($company->id,$workspace->id,$roles->name);
 
-                $default_data = new DefaultData();
-                $default_data->createDefaultData($user->id,$workspace->id);
+                // User Default Data
+                event(new DefaultData($company->id,$workspace->id));
 
+                // send email
+                try
+                {
+                    $role_r = Role::find($roles->id);
+                    $check_user_for_email_template = User::where("email",$user->email)->first();
+                    $company_settings = getCompanyAllSetting();
+                    $workspace_setting = getCompanyAllSetting($user->id,$workspace->id);
+
+                    $uArr = [
+                        "email" => $user->email,
+                        "password" => $userpassword,
+                        "company_name" => $user->name,
+                        "workspace_name" => $workspace->name,
+                        "app_name" => !empty($company_settings["app_name"]) ? $company_settings["app_name"] : env("APP_NAME"),
+                        "app_url" => env("APP_URL"),
+                    ];
+
+                    $resp = EmailTemplate::sendEmailTemplate("New Company", [$check_user_for_email_template->id => $check_user_for_email_template->email], $uArr, $user->id,$workspace->id);
+                }
+                catch(\Exception $e)
+                {
+                    $resp["error"] = $e->getMessage();
+                }
+                return redirect()->route("users.index")->with("success", __("Company successfully created.") . ((isset($resp) && $resp["is_success"] == false && !empty($resp["error"])) ? "<br> <span class=\"text-danger\">" . $resp["error"] . "</span>" : ""));
             }
             else
             {
-                event(new CreateUser($user,$request->input('roles')));
-            }
+                // make entry in user_workspaces table
+                User::AddUserToWorkspaces($user->id,getActiveWorkSpace(),$roles->name);
 
-            return redirect()->back()->with('success', __('User successfully created.'));
+                try
+                {
+                    event(new CreateUser($user,$request));
+                }
+                catch(\Exception $e)
+                {
+                    $resp["error"] = $e->getMessage();
+                }
+                return redirect()->route("users.index")->with("success", __("User successfully created.") . ((isset($resp) && $resp["is_success"] == false && !empty($resp["error"])) ? "<br> <span class=\"text-danger\">" . $resp["error"] . "</span>" : ""));
+            }
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with("error", __("Permission denied."));
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -299,7 +342,16 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return redirect()->back()->with('error', __('Permission denied.'));
+        if(Auth::user()->isAbleTo("user show"))
+        {
+            $user = User::find($id);
+            $roles = Role::where("created_by",creatorId())->pluck("name","id");
+            return view("users.show",compact("user","roles"));
+        }
+        else
+        {
+            return redirect()->back()->with("error", __("Permission denied."));
+        }
     }
 
     /**
@@ -310,15 +362,15 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        if(Auth::user()->isAbleTo('user edit'))
+        if(Auth::user()->isAbleTo("user edit"))
         {
             $user = User::find($id);
-            $roles = Role::where('created_by',creatorId())->pluck('name','id');
-            return view('users.edit',compact('user','roles'));
+            $roles = Role::where("created_by",creatorId())->pluck("name","id");
+            return view("users.edit",compact("user","roles"));
         }
         else
         {
-            return response()->json(['error' => __('Permission denied.')], 401);
+            return response()->json(["error" => __("Permission denied.")], 401);
         }
     }
 
@@ -331,26 +383,32 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(Auth::user()->isAbleTo('user edit'))
+        if(Auth::user()->isAbleTo("user edit"))
         {
             $user = User::find($id);
-            if (Auth::user()->type == 'super admin') {
+            if (Auth::user()->type == "super admin") {
                 $validatorArray = [
-                    'name' => 'required|max:120',
-                    'email' => ['required', 'email',
-                        Rule::unique('users')->ignore($user->id)->where(function ($query) {
-                            return $query->where('created_by', creatorId());
+                    "name" => "required|max:120",
+                    "email" => ["required", "email",
+                        Rule::unique("users")->where(function ($query) use ($id) {
+                            return $query->where("created_by", creatorId())->where("id", "!=", $id);
                         })
                     ],
+                    "cnpj" => "nullable|string|max:18",
+                    "inscricao_estadual" => "nullable|string|max:20",
+                    "celular" => "nullable|string|max:15",
+                    "cidade" => "nullable|string|max:255",
+                    "estado" => "nullable|string|max:2",
                 ];
             } else {
                 $validatorArray = [
-                    'name' => 'required|max:120',
-                    'roles' => 'required|exists:roles,id',
-                    'email' => ['required', 'email',
-                        Rule::unique('users')->ignore($user->id)->where(function ($query) {
-                            return $query->where('created_by', creatorId())
-                                         ->where('workspace_id', getActiveWorkSpace());
+                    "name" => "required|max:120",
+                    "roles" => "required|exists:roles,id",
+                    "email" => ["required", "email",
+                        Rule::unique("users")->where(function ($query) use ($id) {
+                            return $query->where("created_by", creatorId())
+                                         ->where("workspace_id", getActiveWorkSpace())
+                                         ->where("id", "!=", $id);
                         })
                     ],
                 ];
@@ -360,100 +418,81 @@ class UserController extends Controller
 
             if($validator->fails())
             {
-                return redirect()->back()->with('error', $validator->errors()->first());
+                return redirect()->back()->with("error", $validator->errors()->first());
             }
 
-            if(!empty($request->password_switch) && $request->password_switch == 'on')
+            if(Auth::user()->type == "super admin")
             {
-                $validator = Validator::make(
-                    $request->all(), ['password' => 'required|min:6']
-                );
-
-                if($validator->fails())
-                {
-                    return redirect()->back()->with('error', $validator->errors()->first());
-                }
-
-                $userpassword               = $request->input('password');
+                $roles = Role::where("name","company")->first();
             }
-            if($request->input('mobile_no')){
-                $validator = Validator::make(
-                    $request->all(), ['mobile_no' => 'nullable|regex:/^\+\d{1,3}\d{9,13}$/',]
-                );
-                if($validator->fails())
-                {
-                    return redirect()->back()->with('error', $validator->errors()->first());
-                }
+            else
+            {
+                $roles = Role::find($request->input("roles"));
             }
 
-            $user['name']               = $request->input('name');
-            $user['email']              = $request->input('email');
-            $user['mobile_no']          = $request->input('mobile_no');
-            $user['password']           = !empty($userpassword) ? \Hash::make($userpassword) : $user->password;
-            
+            $user->name               = $request->input("name");
+            $user->email              = $request->input("email");
+            $user->type               = $roles->name;
+
             // New customer fields
-            $user['cnpj']               = $request->input('cnpj');
-            $user['inscricao_estadual'] = $request->input('inscricao_estadual');
-            $user['celular']            = $request->input('celular');
-            $user['informacoes_credito'] = $request->input('informacoes_credito');
-            $user['latitude']           = $request->input('latitude');
-            $user['longitude']          = $request->input('longitude');
+            $user->cnpj               = $request->input("cnpj");
+            $user->inscricao_estadual = $request->input("inscricao_estadual");
+            $user->celular            = $request->input("celular");
+            $user->informacoes_credito = $request->input("informacoes_credito");
+            $user->latitude           = $request->input("latitude");
+            $user->longitude          = $request->input("longitude");
+            $user->cidade             = $request->input("cidade");
+            $user->estado             = $request->input("estado");
 
             // Handle photo upload
-            if($request->hasFile('foto')) {
-                // Delete old photo if exists
-                if ($user->caminho_foto && \Storage::disk('public')->exists($user->caminho_foto)) {
-                    \Storage::disk('public')->delete($user->caminho_foto);
+            if($request->hasFile("foto")) {
+                $foto = $request->file("foto");
+                $fotoName = time() . "_" . $foto->getClientOriginalName();
+                $fotoPath = $foto->storeAs("customers/photos", $fotoName, "public");
+                $user->caminho_foto = $fotoPath;
+            } elseif ($request->has("remove_foto") && $request->input("remove_foto") == "1") {
+                // Remove existing photo if requested
+                if ($user->caminho_foto) {
+                    delete_file($user->caminho_foto);
+                    $user->caminho_foto = null;
                 }
-                $foto = $request->file('foto');
-                $fotoName = time() . '_' . $foto->getClientOriginalName();
-                $fotoPath = $foto->storeAs('customers/photos', $fotoName, 'public');
-                $user['caminho_foto'] = $fotoPath;
-            } elseif ($request->has('remove_foto')) {
-                // Remove photo if requested
-                if ($user->caminho_foto && \Storage::disk('public')->exists($user->caminho_foto)) {
-                    \Storage::disk('public')->delete($user->caminho_foto);
-                }
-                $user['caminho_foto'] = null;
             }
-
+            
             // Handle documents upload
-            if($request->hasFile('documentos')) {
-                $existingDocuments = json_decode($user->caminho_documentos ?? '[]', true);
-                $newDocuments = [];
-                foreach($request->file('documentos') as $documento) {
-                    $docName = time() . '_' . $documento->getClientOriginalName();
-                    $docPath = $documento->storeAs('customers/documents', $docName, 'public');
-                    $newDocuments[] = $docPath;
+            if($request->hasFile("documentos")) {
+                $documentos = $user->caminho_documentos ? json_decode($user->caminho_documentos, true) : [];
+                foreach($request->file("documentos") as $documento) {
+                    $docName = time() . "_" . $documento->getClientOriginalName();
+                    $docPath = $documento->storeAs("customers/documents", $docName, "public");
+                    $documentos[] = $docPath;
                 }
-                $user['caminho_documentos'] = json_encode(array_merge($existingDocuments, $newDocuments));
-            } elseif ($request->has('remove_documentos')) {
-                // Remove all documents if requested
-                $existingDocuments = json_decode($user->caminho_documentos ?? '[]', true);
-                foreach ($existingDocuments as $docPath) {
-                    if (\Storage::disk('public')->exists($docPath)) {
-                        \Storage::disk('public')->delete($docPath);
+                $user->caminho_documentos = json_encode($documentos);
+            } elseif ($request->has("remove_documentos")) {
+                // Remove selected documents if requested
+                $documentos_to_keep = [];
+                $existing_documents = $user->caminho_documentos ? json_decode($user->caminho_documentos, true) : [];
+                foreach ($existing_documents as $doc_path) {
+                    if (!in_array($doc_path, $request->input("remove_documentos"))) {
+                        $documentos_to_keep[] = $doc_path;
+                    } else {
+                        delete_file($doc_path);
                     }
                 }
-                $user['caminho_documentos'] = null;
+                $user->caminho_documentos = json_encode($documentos_to_keep);
             }
 
-            if(Auth::user()->type != 'super admin')
-            {
-                $roles = Role::find($request->input('roles'));
-                $user['type'] = $roles->name;
-            }
             $user->save();
 
-            event(new UpdateUser($user,$request->input('roles')));
+            event(new UpdateUser($user,$request));
 
-            return redirect()->back()->with('success', __('User successfully updated.'));
+            return redirect()->back()->with("success", __("User successfully updated."));
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with("error", __("Permission denied."));
         }
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -463,16 +502,12 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        if(Auth::user()->isAbleTo('user delete'))
+        if(Auth::user()->isAbleTo("user delete"))
         {
             $user = User::find($id);
-            if($user->type == 'super admin')
+            if(Auth::user()->type == "super admin")
             {
-                return redirect()->back()->with('error', __('Permission denied.'));
-            }
-            if($user->type == 'company')
-            {
-                $workspaces = WorkSpace::where('created_by',$user->id)->get();
+                $workspaces = WorkSpace::where("created_by",$id)->get();
                 foreach($workspaces as $workspace)
                 {
                     $workspace->delete();
@@ -481,74 +516,74 @@ class UserController extends Controller
             $user->delete();
             event(new DestroyUser($user));
 
-            return redirect()->back()->with('success', __('User successfully deleted.'));
+            return redirect()->back()->with("success", __("User successfully deleted."));
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with("error", __("Permission denied."));
         }
     }
 
     public function changePassword($id)
     {
         $user = User::find($id);
-        if(Auth::user()->isAbleTo('user change password'))
+        if(Auth::user()->isAbleTo("user change password"))
         {
-            return view('users.changepassword',compact('user'));
+            return view("users.changepassword",compact("user"));
         }
         else
         {
-            return response()->json(['error' => __('Permission denied.')], 401);
+            return response()->json(["error" => __("Permission denied.")], 401);
         }
     }
 
     public function changePasswordStore(Request $request,$id)
     {
-        if(Auth::user()->isAbleTo('user change password'))
+        if(Auth::user()->isAbleTo("user change password"))
         {
             $validator = Validator::make($request->all(), [
-                'password' => 'required|confirmed|min:6',
+                "password" => "required|confirmed|min:6",
             ]);
 
             if($validator->fails())
             {
-                return redirect()->back()->with('error', $validator->errors()->first());
+                return redirect()->back()->with("error", $validator->errors()->first());
             }
 
             $user = User::find($id);
-            $user->password = Hash::make($request->input('password'));
+            $user->password = Hash::make($request->input("password"));
             $user->save();
 
-            return redirect()->back()->with('success', __('Password successfully changed.'));
+            return redirect()->back()->with("success", __("Password successfully changed."));
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with("error", __("Permission denied."));
         }
     }
 
     public function LoginManage($id)
     {
-        if(Auth::user()->isAbleTo('user login manage'))
+        if(Auth::user()->isAbleTo("user login manage"))
         {
             $user = User::find($id);
             if($user->is_enable_login == 1)
             {
                 $user->is_enable_login = 0;
                 $user->save();
-                $msg = __('User login disable successfully.');
+                $msg = __("User login disable successfully.");
             }
             else
             {
                 $user->is_enable_login = 1;
                 $user->save();
-                $msg = __('User login enable successfully.');
+                $msg = __("User login enable successfully.");
             }
-            return redirect()->back()->with('success', $msg);
+            return redirect()->back()->with("success", $msg);
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with("error", __("Permission denied."));
         }
     }
 
@@ -559,22 +594,22 @@ class UserController extends Controller
         {
             $user->is_disable = 0;
             $user->save();
-            $msg = __('User successfully unable.');
+            $msg = __("User successfully unable.");
         }
         else
         {
             $user->is_disable = 1;
             $user->save();
-            $msg = __('User successfully disable.');
+            $msg = __("User successfully disable.");
         }
-        if(Auth::user()->type == 'super admin'){
-            $msg =  __('The customer has been verifed successfully.');
+        if(Auth::user()->type == "super admin"){
+            $msg =  __("The customer has been verifed successfully.");
         }
         else{
-            $msg =  __('The user has been verifed successfully.');
+            $msg =  __("The user has been verifed successfully.");
         }
 
-        return redirect()->back()->with('success', $msg);
+        return redirect()->back()->with("success", $msg);
     }
 
     public function Counter($id)
@@ -582,55 +617,55 @@ class UserController extends Controller
         $response = [];
         if(!empty($id))
         {
-            $workspces= WorkSpace::where('created_by', $id)
-            ->selectRaw('COUNT(*) as total_workspace, SUM(CASE WHEN is_disable = 0 THEN 1 ELSE 0 END) as disable_workspace, SUM(CASE WHEN is_disable = 1 THEN 1 ELSE 0 END) as active_workspace')
+            $workspces= WorkSpace::where("created_by", $id)
+            ->selectRaw("COUNT(*) as total_workspace, SUM(CASE WHEN is_disable = 0 THEN 1 ELSE 0 END) as disable_workspace, SUM(CASE WHEN is_disable = 1 THEN 1 ELSE 0 END) as active_workspace")
             ->first();
-            $workspaces = WorkSpace::where('created_by',$id)->get();
+            $workspaces = WorkSpace::where("created_by",$id)->get();
             $users_data = [];
             foreach($workspaces as $workspce)
             {
-                $users = User::where('created_by',$id)->where('workspace_id',$workspce->id)->selectRaw('COUNT(*) as total_users, SUM(CASE WHEN is_disable = 0 THEN 1 ELSE 0 END) as disable_users, SUM(CASE WHEN is_disable = 1 THEN 1 ELSE 0 END) as active_users')->first();
+                $users = User::where("created_by",$id)->where("workspace_id",$workspce->id)->selectRaw("COUNT(*) as total_users, SUM(CASE WHEN is_disable = 0 THEN 1 ELSE 0 END) as disable_users, SUM(CASE WHEN is_disable = 1 THEN 1 ELSE 0 END) as active_users")->first();
 
                 $users_data[$workspce->name] = [
-                    'workspace_id' => $workspce->id,
-                    'total_users' => !empty($users->total_users) ? $users->total_users : 0,
-                    'disable_users' => !empty($users->disable_users) ? $users->disable_users : 0,
-                    'active_users' => !empty($users->active_users) ? $users->active_users : 0,
+                    "workspace_id" => $workspce->id,
+                    "total_users" => !empty($users->total_users) ? $users->total_users : 0,
+                    "disable_users" => !empty($users->disable_users) ? $users->disable_users : 0,
+                    "active_users" => !empty($users->active_users) ? $users->active_users : 0,
                 ];
             }
             $workspce_data =[
-                'total_workspace' =>  $workspces->total_workspace,
-                'disable_workspace' => $workspces->disable_workspace,
-                'active_workspace' => $workspces->active_workspace,
+                "total_workspace" =>  $workspces->total_workspace,
+                "disable_workspace" => $workspces->disable_workspace,
+                "active_workspace" => $workspces->active_workspace,
             ];
-            $response['users_data'] = $users_data;
-            $response['workspce_data'] = $workspce_data;
+            $response["users_data"] = $users_data;
+            $response["workspce_data"] = $workspce_data;
 
             return [
-                'is_success' => true,
-                'response' => $response,
+                "is_success" => true,
+                "response" => $response,
             ];
         }
         return [
-            'is_success' => false,
-            'error' => __('Plan is deleted.'),
+            "is_success" => false,
+            "error" => __("Plan is deleted."),
         ];
     }
 
     public function verifeduser($id)
     {
         $user                    = User::find($id);
-        $user->email_verified_at = date('Y-m-d h:i:s');
+        $user->email_verified_at = date("Y-m-d h:i:s");
         $user->save();
 
-        if(Auth::user()->type == 'super admin'){
-            $msg =  __('The customer has been verifed successfully.');
+        if(Auth::user()->type == "super admin"){
+            $msg =  __("The customer has been verifed successfully.");
         }
         else{
-            $msg =  __('The user has been verifed successfully.');
+            $msg =  __("The user has been verifed successfully.");
         }
 
-        return redirect()->back()->with('success', $msg);
+        return redirect()->back()->with("success", $msg);
     }
 
     public function mapView()
