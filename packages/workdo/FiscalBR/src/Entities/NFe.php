@@ -44,6 +44,7 @@ class NFe extends Model
         'xml_enviado',
         'xml_autorizado',
         'xml_cancelamento',
+        'qr_code_url',
         'invoice_id',
         'pos_sale_id',
     ];

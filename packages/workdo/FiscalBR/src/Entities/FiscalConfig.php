@@ -23,8 +23,12 @@ class FiscalConfig extends Model
         'ambiente',
         'serie_nfe',
         'numero_nfe',
+        'ultimo_numero_nfe',
         'serie_nfce',
         'numero_nfce',
+        'ultimo_numero_nfce',
+        'csc',
+        'csc_id',
         'ativo',
     ];
 
