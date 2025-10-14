@@ -12,10 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('fiscalbr_configs', function (Blueprint $table) {
-            $table->string('serie_nfce', 3)->default('1')->after('serie_nfe');
-            $table->integer('ultimo_numero_nfce')->default(0)->after('ultimo_numero_nfe');
-            $table->string('csc', 100)->nullable()->after('ultimo_numero_nfce');
-            $table->string('csc_id', 10)->default('1')->after('csc');
+            if (!Schema::hasColumn('fiscalbr_configs', 'serie_nfce')) {
+                $table->string('serie_nfce', 3)->default('1')->after('serie_nfe');
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'ultimo_numero_nfce')) {
+                $table->integer('ultimo_numero_nfce')->default(0)->after('ultimo_numero_nfe');
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'csc')) {
+                $table->string('csc', 100)->nullable()->after('ultimo_numero_nfce');
+            }
+            if (!Schema::hasColumn('fiscalbr_configs', 'csc_id')) {
+                $table->string('csc_id', 10)->default('1')->after('csc');
+            }
         });
     }
 
@@ -25,7 +33,18 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('fiscalbr_configs', function (Blueprint $table) {
-            $table->dropColumn(['serie_nfce', 'ultimo_numero_nfce', 'csc', 'csc_id']);
+            if (Schema::hasColumn('fiscalbr_configs', 'serie_nfce')) {
+                $table->dropColumn('serie_nfce');
+            }
+            if (Schema::hasColumn('fiscalbr_configs', 'ultimo_numero_nfce')) {
+                $table->dropColumn('ultimo_numero_nfce');
+            }
+            if (Schema::hasColumn('fiscalbr_configs', 'csc')) {
+                $table->dropColumn('csc');
+            }
+            if (Schema::hasColumn('fiscalbr_configs', 'csc_id')) {
+                $table->dropColumn('csc_id');
+            }
         });
     }
 };
