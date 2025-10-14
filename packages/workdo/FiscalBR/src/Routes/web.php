@@ -8,6 +8,7 @@ use Workdo\FiscalBR\Http\Controllers\NFCeController;
 use Workdo\FiscalBR\Http\Controllers\SpedController;
 use Workdo\FiscalBR\Http\Controllers\NFSeController;
 use Workdo\FiscalBR\Http\Controllers\ReportController;
+use Workdo\FiscalBR\Http\Controllers\BIController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,6 +87,12 @@ Route::group(['middleware' => ['web', 'auth', 'verified', 'PlanModuleCheck:Fisca
         Route::get('/sped', [ReportController::class, 'sped'])->name('sped');
         Route::get('/nfse', [ReportController::class, 'nfse'])->name('nfse');
         Route::post('/export', [ReportController::class, 'export'])->name('export');
+    });
+    
+    // Business Intelligence Fiscal
+    Route::prefix('fiscalbr/bi')->name('fiscalbr.bi.')->group(function () {
+        Route::get('/', [BIController::class, 'index'])->name('index');
+        Route::post('/export', [BIController::class, 'export'])->name('export');
     });
 });
 
