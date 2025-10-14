@@ -61,52 +61,22 @@
                     <div class="card-body">
                         {{ Form::open(['route' => ['users.index'], 'method' => 'GET', 'id' => 'user_submit']) }}
                         <div class="row d-flex align-items-center justify-content-end">
-                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 mr-2 mb-3">
+                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 mr-2">
                                 <div class="btn-box">
                                     {{ Form::label('name', __('Name'), ['class' => 'form-label']) }}
                                     {{ Form::text('name', isset($_GET['name']) ? $_GET['name'] : null, ['class' => 'form-control', 'placeholder' => __('Enter Name')]) }}
                                 </div>
                             </div>
-                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 mr-2 mb-3">
+                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 mr-2">
                                 <div class="btn-box">
                                     {{ Form::label('email', __('Email'), ['class' => 'form-label']) }}
                                     {{ Form::text('email', isset($_GET['email']) ? $_GET['email'] : null, ['class' => 'form-control', 'placeholder' => __('Enter Email')]) }}
                                 </div>
                             </div>
-                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 mr-2 mb-3">
+                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 mr-2">
                                 <div class="btn-box">
                                     {{ Form::label('role', __('Role'), ['class' => 'form-label']) }}
                                     {{ Form::select('role', $roles, isset($_GET['role']) ? $_GET['role'] : '', ['class' => 'form-control select text-capitalize', 'placeholder' => __('All')]) }}
-                                </div>
-                            </div>
-                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 mr-2 mb-3">
-                                <div class="btn-box">
-                                    {{ Form::label('cnpj', __('CNPJ'), ['class' => 'form-label']) }}
-                                    {{ Form::text('cnpj', isset($_GET['cnpj']) ? $_GET['cnpj'] : null, ['class' => 'form-control', 'placeholder' => __('Enter CNPJ')]) }}
-                                </div>
-                            </div>
-                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 mr-2 mb-3">
-                                <div class="btn-box">
-                                    {{ Form::label('celular', __('Mobile Phone'), ['class' => 'form-label']) }}
-                                    {{ Form::text('celular', isset($_GET['celular']) ? $_GET['celular'] : null, ['class' => 'form-control', 'placeholder' => __('Enter Phone')]) }}
-                                </div>
-                            </div>
-                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 mr-2 mb-3">
-                                <div class="btn-box">
-                                    {{ Form::label('cidade', __('City'), ['class' => 'form-label']) }}
-                                    {{ Form::text('cidade', isset($_GET['cidade']) ? $_GET['cidade'] : null, ['class' => 'form-control', 'placeholder' => __('Enter City')]) }}
-                                </div>
-                            </div>
-                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 mr-2 mb-3">
-                                <div class="btn-box">
-                                    {{ Form::label('estado', __('State'), ['class' => 'form-label']) }}
-                                    {{ Form::select('estado', [''=>__('All'), 'AC'=>'AC', 'AL'=>'AL', 'AP'=>'AP', 'AM'=>'AM', 'BA'=>'BA', 'CE'=>'CE', 'DF'=>'DF', 'ES'=>'ES', 'GO'=>'GO', 'MA'=>'MA', 'MT'=>'MT', 'MS'=>'MS', 'MG'=>'MG', 'PA'=>'PA', 'PB'=>'PB', 'PR'=>'PR', 'PE'=>'PE', 'PI'=>'PI', 'RJ'=>'RJ', 'RN'=>'RN', 'RS'=>'RS', 'RO'=>'RO', 'RR'=>'RR', 'SC'=>'SC', 'SP'=>'SP', 'SE'=>'SE', 'TO'=>'TO'], isset($_GET['estado']) ? $_GET['estado'] : '', ['class' => 'form-control select']) }}
-                                </div>
-                            </div>
-                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 mr-2 mb-3">
-                                <div class="btn-box">
-                                    {{ Form::label('status', __('Status'), ['class' => 'form-label']) }}
-                                    {{ Form::select('status', [''=>__('All'), '1'=>__('Active'), '0'=>__('Inactive')], isset($_GET['status']) ? $_GET['status'] : '', ['class' => 'form-control select']) }}
                                 </div>
                             </div>
                             <div class="col-auto float-end mt-4 d-flex">

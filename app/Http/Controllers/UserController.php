@@ -69,6 +69,26 @@ class UserController extends Controller
                     $role = Role::find($request->role);
                     $users = $users->where('type',$role->name);
                 }
+                if($request->cnpj)
+                {
+                    $users->where('cnpj', 'like', '%' . $request->cnpj . '%');
+                }
+                if($request->celular)
+                {
+                    $users->where('celular', 'like', '%' . $request->celular . '%');
+                }
+                if($request->cidade)
+                {
+                    $users->where('endereco_completo', 'like', '%' . $request->cidade . '%');
+                }
+                if($request->estado)
+                {
+                    $users->where('endereco_completo', 'like', '%' . $request->estado . '%');
+                }
+                if($request->status !== null && $request->status !== '')
+                {
+                    $users->where('is_disable', $request->status == '1' ? 0 : 1);
+                }
                 $users = $users->paginate(11);
             }
             return view('users.index',compact('users','roles'));
@@ -204,6 +224,34 @@ class UserController extends Controller
             $user['created_by']         = creatorId();
             $user['workspace_id']       = getActiveWorkSpace();
             $user['active_workspace']   = getActiveWorkSpace();
+            
+            // New customer fields
+            $user['cnpj']               = $request->input('cnpj');
+            $user['inscricao_estadual'] = $request->input('inscricao_estadual');
+            $user['celular']            = $request->input('celular');
+            $user['informacoes_credito'] = $request->input('informacoes_credito');
+            $user['latitude']           = $request->input('latitude');
+            $user['longitude']          = $request->input('longitude');
+            
+            // Handle photo upload
+            if($request->hasFile('foto')) {
+                $foto = $request->file('foto');
+                $fotoName = time() . '_' . $foto->getClientOriginalName();
+                $fotoPath = $foto->storeAs('customers/photos', $fotoName, 'public');
+                $user['caminho_foto'] = $fotoPath;
+            }
+            
+            // Handle documents upload
+            if($request->hasFile('documentos')) {
+                $documentos = [];
+                foreach($request->file('documentos') as $documento) {
+                    $docName = time() . '_' . $documento->getClientOriginalName();
+                    $docPath = $documento->storeAs('customers/documents', $docName, 'public');
+                    $documentos[] = $docPath;
+                }
+                $user['caminho_documentos'] = json_encode($documentos);
+            }
+            
             $user = User::create($user);
             if(Auth::user()->type == 'super admin')
             {
@@ -387,6 +435,49 @@ class UserController extends Controller
                 $user->name         = $request->name;
                 $user->email        = $request->email;
                 $user->mobile_no    = $request->mobile_no;
+                
+                // Update new customer fields
+                $user->cnpj               = $request->input('cnpj');
+                $user->inscricao_estadual = $request->input('inscricao_estadual');
+                $user->celular            = $request->input('celular');
+                $user->informacoes_credito = $request->input('informacoes_credito');
+                $user->latitude           = $request->input('latitude');
+                $user->longitude          = $request->input('longitude');
+                
+                // Handle photo upload
+                if($request->hasFile('foto')) {
+                    // Delete old photo if exists
+                    if(!empty($user->caminho_foto) && \Storage::disk('public')->exists($user->caminho_foto)) {
+                        \Storage::disk('public')->delete($user->caminho_foto);
+                    }
+                    $foto = $request->file('foto');
+                    $fotoName = time() . '_' . $foto->getClientOriginalName();
+                    $fotoPath = $foto->storeAs('customers/photos', $fotoName, 'public');
+                    $user->caminho_foto = $fotoPath;
+                }
+                
+                // Handle documents upload
+                if($request->hasFile('documentos')) {
+                    // Delete old documents if exists
+                    if(!empty($user->caminho_documentos)) {
+                        $oldDocs = json_decode($user->caminho_documentos, true);
+                        if(is_array($oldDocs)) {
+                            foreach($oldDocs as $oldDoc) {
+                                if(\Storage::disk('public')->exists($oldDoc)) {
+                                    \Storage::disk('public')->delete($oldDoc);
+                                }
+                            }
+                        }
+                    }
+                    $documentos = [];
+                    foreach($request->file('documentos') as $documento) {
+                        $docName = time() . '_' . $documento->getClientOriginalName();
+                        $docPath = $documento->storeAs('customers/documents', $docName, 'public');
+                        $documentos[] = $docPath;
+                    }
+                    $user->caminho_documentos = json_encode($documentos);
+                }
+                
                 $user->save();
 
                 event(new UpdateUser($user,$request));
