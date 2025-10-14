@@ -11,7 +11,7 @@ Módulo addon para o Gestor Easy v3 (WorkDo Dash SaaS) que implementa funcionali
 
 ## Versão
 
-**1.0.0** - Versão inicial com estrutura básica
+**1.2.0** - Fase 3: Eventos de NF-e (Cancelamento, CC-e, Consultas)
 
 ## Requisitos
 
@@ -64,39 +64,56 @@ O sistema gerencia automaticamente a numeração sequencial de NF-e e NFC-e.
 - Controle de numeração
 
 ### NF-e
-- Listagem de notas emitidas
-- Criação de rascunhos
-- Interface para emissão (em desenvolvimento)
+- ✅ Criação de NF-e
+- ✅ Geração de XML (layout 4.00)
+- ✅ Assinatura digital
+- ✅ Transmissão para SEFAZ
+- ✅ Geração de DANFE (PDF)
+- ✅ Download de XML autorizado
+- ✅ Cancelamento de NF-e
+- ✅ Carta de Correção Eletrônica (CC-e)
+- ✅ Consulta de situação na SEFAZ
+- ✅ Logs de auditoria
 
 ### NFC-e
-- Listagem de notas emitidas
-- Interface para emissão (em desenvolvimento)
+- 🚧 Em desenvolvimento
 
 ## Roadmap
 
-### Fase 1 (Atual) ✅
+### Fase 1 ✅ Concluída
 - [x] Estrutura básica do módulo
 - [x] Migrations e Models
 - [x] Service Providers
 - [x] Views básicas
 - [x] Controllers
 
-### Fase 2 (Próxima)
-- [ ] Implementação completa de emissão de NF-e
-- [ ] Integração com biblioteca NFePHP
-- [ ] Comunicação com SEFAZ
-- [ ] Geração de DANFE
+### Fase 2 ✅ Concluída
+- [x] Implementação completa de emissão de NF-e
+- [x] Integração com biblioteca NFePHP
+- [x] Comunicação com SEFAZ
+- [x] Geração de DANFE
+- [x] Assinatura digital
+- [x] Processamento assíncrono
 
-### Fase 3
+### Fase 3 ✅ Concluída
+- [x] Cancelamento de NF-e
+- [x] Carta de Correção Eletrônica (CC-e)
+- [x] Consulta de situação na SEFAZ
+- [x] Inutilização de numeração
+- [x] Eventos de NF-e
+
+### Fase 4 (Próxima)
 - [ ] Implementação de NFC-e
 - [ ] Integração com módulo POS
-
-### Fase 4
-- [ ] Geração de SPED Fiscal
-- [ ] Exportação de arquivos
+- [ ] QR Code para NFC-e
 
 ### Fase 5
+- [ ] Geração de SPED Fiscal (EFD ICMS/IPI)
+- [ ] Exportação de arquivos SPED
+
+### Fase 6
 - [ ] Emissão de NFS-e (padrão ABRASF)
+- [ ] Integração com prefeituras
 
 ## Estrutura do Banco de Dados
 
@@ -104,6 +121,7 @@ O sistema gerencia automaticamente a numeração sequencial de NF-e e NFC-e.
 - `fiscalbr_certificates` - Certificados digitais
 - `fiscalbr_nfe` - Notas fiscais (NF-e e NFC-e)
 - `fiscalbr_nfe_items` - Itens das notas fiscais
+- `fiscalbr_nfe_events` - Eventos de NF-e (cancelamento, CC-e)
 - `fiscalbr_sefaz_logs` - Logs de comunicação com SEFAZ
 
 ## Segurança

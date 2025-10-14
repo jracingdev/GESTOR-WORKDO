@@ -47,12 +47,27 @@
                             </button>
                         @endif
                         @if($nfe->status === 'autorizada')
-                            <a href="{{ route('fiscalbr.nfe.danfe', $nfe->id) }}" class="btn btn-info" target="_blank">
-                                <i class="ti ti-file-download"></i> {{ __('DANFE') }}
-                            </a>
-                            <a href="{{ route('fiscalbr.nfe.xml', $nfe->id) }}" class="btn btn-secondary">
-                                <i class="ti ti-file-code"></i> {{ __('XML') }}
-                            </a>
+                            <div class="btn-group" role="group">
+                                <a href="{{ route('fiscalbr.nfe.danfe', $nfe->id) }}" class="btn btn-info" target="_blank">
+                                    <i class="ti ti-file-download"></i> {{ __('DANFE') }}
+                                </a>
+                                <a href="{{ route('fiscalbr.nfe.xml', $nfe->id) }}" class="btn btn-secondary">
+                                    <i class="ti ti-file-code"></i> {{ __('XML') }}
+                                </a>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-warning" onclick="showCartaCorrecaoModal({{ $nfe->id }})">
+                                    <i class="ti ti-edit"></i> {{ __('CC-e') }}
+                                </button>
+                                @if($nfe->canBeCancelled())
+                                    <button type="button" class="btn btn-danger" onclick="showCancelamentoModal({{ $nfe->id }})">
+                                        <i class="ti ti-x"></i> {{ __('Cancelar') }}
+                                    </button>
+                                @endif
+                                <button type="button" class="btn btn-outline-primary" onclick="consultarNFe({{ $nfe->id }})">
+                                    <i class="ti ti-refresh"></i> {{ __('Consultar') }}
+                                </button>
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -163,7 +178,55 @@
     </div>
 </div>
 
+<!-- Modal Cancelamento -->
+<div class="modal fade" id="cancelamentoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ __('Cancelar NF-e') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="justificativa">{{ __('Justificativa') }} <span class="text-danger">*</span></label>
+                    <textarea id="justificativa" class="form-control" rows="4" placeholder="Mínimo 15 caracteres" required></textarea>
+                    <small class="text-muted">{{ __('A justificativa deve ter no mínimo 15 caracteres.') }}</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Fechar') }}</button>
+                <button type="button" class="btn btn-danger" onclick="confirmarCancelamento()">{{ __('Cancelar NF-e') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Carta de Correção -->
+<div class="modal fade" id="cartaCorrecaoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ __('Carta de Correção Eletrônica (CC-e)') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="correcao">{{ __('Correção') }} <span class="text-danger">*</span></label>
+                    <textarea id="correcao" class="form-control" rows="4" placeholder="Mínimo 15 caracteres" required></textarea>
+                    <small class="text-muted">{{ __('Descreva a correção a ser feita na NF-e (mínimo 15 caracteres).') }}</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Fechar') }}</button>
+                <button type="button" class="btn btn-warning" onclick="confirmarCartaCorrecao()">{{ __('Enviar CC-e') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+let currentNFeId = null;
+
 function transmitirNFe(nfeId) {
     if (!confirm('Deseja realmente transmitir esta NF-e para a SEFAZ?')) {
         return;
@@ -187,6 +250,98 @@ function transmitirNFe(nfeId) {
     })
     .catch(error => {
         alert('Erro ao transmitir NF-e: ' + error);
+    });
+}
+
+function showCancelamentoModal(nfeId) {
+    currentNFeId = nfeId;
+    document.getElementById('justificativa').value = '';
+    new bootstrap.Modal(document.getElementById('cancelamentoModal')).show();
+}
+
+function confirmarCancelamento() {
+    const justificativa = document.getElementById('justificativa').value;
+    
+    if (justificativa.length < 15) {
+        alert('A justificativa deve ter no mínimo 15 caracteres.');
+        return;
+    }
+
+    fetch(`/fiscalbr/nfe/${currentNFeId}/cancelar`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ justificativa })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Erro: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('Erro ao cancelar NF-e: ' + error);
+    });
+}
+
+function showCartaCorrecaoModal(nfeId) {
+    currentNFeId = nfeId;
+    document.getElementById('correcao').value = '';
+    new bootstrap.Modal(document.getElementById('cartaCorrecaoModal')).show();
+}
+
+function confirmarCartaCorrecao() {
+    const correcao = document.getElementById('correcao').value;
+    
+    if (correcao.length < 15) {
+        alert('A correção deve ter no mínimo 15 caracteres.');
+        return;
+    }
+
+    fetch(`/fiscalbr/nfe/${currentNFeId}/carta-correcao`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ correcao })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message + ' (Sequência: ' + data.sequencia + ')');
+            location.reload();
+        } else {
+            alert('Erro: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('Erro ao enviar CC-e: ' + error);
+    });
+}
+
+function consultarNFe(nfeId) {
+    fetch(`/fiscalbr/nfe/${nfeId}/consultar`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Status: ' + data.codigo + '\n' + data.mensagem);
+        } else {
+            alert('Erro: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('Erro ao consultar NF-e: ' + error);
     });
 }
 </script>

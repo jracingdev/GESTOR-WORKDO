@@ -33,6 +33,8 @@ Route::group(['middleware' => ['web', 'auth', 'verified', 'PlanModuleCheck:Fisca
         Route::get('/{id}', [NFeController::class, 'show'])->name('show');
         Route::post('/{id}/transmitir', [NFeController::class, 'transmitir'])->name('transmitir');
         Route::post('/{id}/cancelar', [NFeController::class, 'cancelar'])->name('cancelar');
+        Route::post('/{id}/carta-correcao', [NFeController::class, 'cartaCorrecao'])->name('carta_correcao');
+        Route::get('/{id}/consultar', [NFeController::class, 'consultar'])->name('consultar');
         Route::get('/{id}/danfe', [NFeController::class, 'danfe'])->name('danfe');
         Route::get('/{id}/xml', [NFeController::class, 'downloadXml'])->name('xml');
     });

@@ -8,6 +8,7 @@ use Workdo\FiscalBR\Entities\NFe;
 use Workdo\FiscalBR\Entities\FiscalConfig;
 use Workdo\FiscalBR\Jobs\ProcessNFeJob;
 use Workdo\FiscalBR\Library\NFeService;
+use Workdo\FiscalBR\Library\NFeEventService;
 
 class NFeController extends Controller
 {
@@ -127,16 +128,90 @@ class NFeController extends Controller
     /**
      * Cancel NF-e.
      *
+     * @param Request $request
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function cancelar($id)
+    public function cancelar(Request $request, $id)
     {
-        // TODO: Implementar cancelamento
-        return response()->json([
-            'success' => true,
-            'message' => 'NF-e cancelada com sucesso!'
-        ]);
+        try {
+            $request->validate([
+                'justificativa' => 'required|min:15',
+            ]);
+
+            $workspaceId = getActiveWorkSpace();
+            $nfe = NFe::where('workspace_id', $workspaceId)->findOrFail($id);
+
+            $eventService = new NFeEventService($workspaceId);
+            $result = $eventService->cancelar($nfe, $request->justificativa);
+
+            return response()->json($result);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Create Carta de Correção Eletrônica.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function cartaCorrecao(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'correcao' => 'required|min:15',
+            ]);
+
+            $workspaceId = getActiveWorkSpace();
+            $nfe = NFe::where('workspace_id', $workspaceId)->findOrFail($id);
+
+            $eventService = new NFeEventService($workspaceId);
+            $result = $eventService->cartaCorrecao($nfe, $request->correcao);
+
+            return response()->json($result);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Consultar NF-e na SEFAZ.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function consultar($id)
+    {
+        try {
+            $workspaceId = getActiveWorkSpace();
+            $nfe = NFe::where('workspace_id', $workspaceId)->findOrFail($id);
+
+            if (!$nfe->chave_acesso) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'NF-e não possui chave de acesso.'
+                ], 400);
+            }
+
+            $eventService = new NFeEventService($workspaceId);
+            $result = $eventService->consultar($nfe->chave_acesso);
+
+            return response()->json($result);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
