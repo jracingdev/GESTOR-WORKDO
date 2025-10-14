@@ -5,6 +5,7 @@ use Workdo\FiscalBR\Http\Controllers\FiscalBRController;
 use Workdo\FiscalBR\Http\Controllers\ConfigController;
 use Workdo\FiscalBR\Http\Controllers\NFeController;
 use Workdo\FiscalBR\Http\Controllers\NFCeController;
+use Workdo\FiscalBR\Http\Controllers\SpedController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,8 +43,24 @@ Route::group(['middleware' => ['web', 'auth', 'verified', 'PlanModuleCheck:Fisca
     // NFC-e
     Route::prefix('fiscalbr/nfce')->name('fiscalbr.nfce.')->group(function () {
         Route::get('/', [NFCeController::class, 'index'])->name('index');
-        Route::post('/emitir', [NFCeController::class, 'emitir'])->name('emitir');
-        Route::get('/{id}/danfe', [NFCeController::class, 'danfe'])->name('danfe');
+        Route::get('/create', [NFCeController::class, 'create'])->name('create');
+        Route::post('/store', [NFCeController::class, 'store'])->name('store');
+        Route::get('/{id}', [NFCeController::class, 'show'])->name('show');
+        Route::post('/{id}/transmitir', [NFCeController::class, 'transmitir'])->name('transmitir');
+        Route::get('/{id}/cupom', [NFCeController::class, 'cupom'])->name('cupom');
+        Route::get('/{id}/xml', [NFCeController::class, 'downloadXml'])->name('xml');
+        Route::get('/{id}/qrcode', [NFCeController::class, 'qrcode'])->name('qrcode');
+    });
+    
+    // SPED Fiscal
+    Route::prefix('fiscalbr/sped')->name('fiscalbr.sped.')->group(function () {
+        Route::get('/', [SpedController::class, 'index'])->name('index');
+        Route::get('/create', [SpedController::class, 'create'])->name('create');
+        Route::post('/generate', [SpedController::class, 'generate'])->name('generate');
+        Route::get('/{id}', [SpedController::class, 'show'])->name('show');
+        Route::get('/{id}/download', [SpedController::class, 'download'])->name('download');
+        Route::post('/{id}/enviar-contabilidade', [SpedController::class, 'enviarContabilidade'])->name('enviar_contabilidade');
+        Route::delete('/{id}', [SpedController::class, 'destroy'])->name('destroy');
     });
 });
 
