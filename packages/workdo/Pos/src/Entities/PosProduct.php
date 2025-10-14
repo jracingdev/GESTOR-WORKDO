@@ -18,6 +18,23 @@ class PosProduct extends Model
         'discount',
         'total',
         'workspace',
+        // Campos fiscais
+        'cfop',
+        'ncm',
+        'cest',
+        'cst_icms',
+        'csosn',
+        'aliquota_icms',
+        'valor_icms',
+        'base_calculo_icms',
+        'cst_pis',
+        'aliquota_pis',
+        'valor_pis',
+        'cst_cofins',
+        'aliquota_cofins',
+        'valor_cofins',
+        'unidade_comercial',
+        'codigo_ean',
     ];
 
     public function product(){

@@ -29,6 +29,15 @@ class Pos extends Model
         'status',
         'shipping_display',
         'created_by',
+        // Campos fiscais
+        'nfce_id',
+        'fiscal_status',
+        'emitir_nfce',
+        'fiscal_observacao',
+        'fiscal_emissao_data',
+        'fiscal_numero_nfce',
+        'fiscal_chave_acesso',
+        'fiscal_erro_mensagem',
     ];
 
     public function customer()
