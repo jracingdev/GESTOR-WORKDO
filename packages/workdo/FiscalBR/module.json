@@ -7,6 +7,12 @@
     "monthly_price": 30,
     "yearly_price": 300,
     "child_module": [],
-    "package_name": "fiscalbr"
+    "package_name": "fiscalbr",
+    "active": 1,
+    "providers": [
+        "Workdo\\FiscalBR\\Providers\\FiscalBRServiceProvider",
+        "Workdo\\FiscalBR\\Providers\\RouteServiceProvider",
+        "Workdo\\FiscalBR\\Providers\\EventServiceProvider"
+    ]
 }
 
