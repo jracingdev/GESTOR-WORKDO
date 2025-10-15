@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::hasTable('users')) {
+            return;
+        }
         Schema::table('users', function (Blueprint $table) {
             // Verificar se as colunas já existem antes de adicionar
             if (!Schema::hasColumn('users', 'cnpj')) {
