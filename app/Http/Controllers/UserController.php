@@ -281,7 +281,7 @@ class UserController extends Controller
                 $company->save();
 
                 // make entry in user_workspaces table
-                User::AddUserToWorkspaces($company->id,$workspace->id,$roles->name);
+                // User::AddUserToWorkspaces($company->id,$workspace->id,$roles->name); // Removido: método não existe
 
                 // User Default Data
                 event(new DefaultData($company->id,$workspace->id));
@@ -314,7 +314,7 @@ class UserController extends Controller
             else
             {
                 // make entry in user_workspaces table
-                User::AddUserToWorkspaces($user->id,getActiveWorkSpace(),$roles->name);
+                // User::AddUserToWorkspaces($user->id,getActiveWorkSpace(),$roles->name); // Removido: método não existe
 
                 try
                 {
