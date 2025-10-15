@@ -6,10 +6,10 @@
  */
 
 // Carregar o autoloader do Laravel
-require __DIR__.'/../vendor/autoload.php';
+require __DIR__."/../vendor/autoload.php";
 
 // Carregar a aplicação Laravel
-$app = require_once __DIR__.'/../bootstrap/app.php';
+$app = require_once __DIR__."/../bootstrap/app.php";
 
 // Inicializar o kernel
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
@@ -44,11 +44,11 @@ try {
         'informacoes_credito' => function($table) {
             $table->text('informacoes_credito')->nullable()->after('celular');
         },
-        'foto_cliente' => function($table) {
-            $table->string('foto_cliente')->nullable()->after('informacoes_credito');
+        'caminho_foto' => function($table) {
+            $table->string('caminho_foto')->nullable()->after('informacoes_credito');
         },
         'caminho_documentos' => function($table) {
-            $table->json('caminho_documentos')->nullable()->after('foto_cliente');
+            $table->json('caminho_documentos')->nullable()->after('caminho_foto');
         },
         'endereco_completo' => function($table) {
             $table->string('endereco_completo')->nullable()->after('caminho_documentos');
@@ -104,7 +104,8 @@ try {
         echo "</ul>";
     }
     
-    echo "<p><strong>Colunas já existentes:</strong> " . count($columnsExisting) . "</p>";
+    echo "<p><strong>Colunas já existentes:</strong> " . count($columnsExisting) . "</p>
+";
     if (count($columnsExisting) > 0) {
         echo "<ul>";
         foreach ($columnsExisting as $col) {
