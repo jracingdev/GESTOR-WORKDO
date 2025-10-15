@@ -25,72 +25,72 @@ echo "<p>Adicionando campos de cliente...</p>";
 try {
     // Verificar conexão com o banco
     DB::connection()->getPdo();
-    echo "<p style='color: green;'>✓ Conexão com banco de dados estabelecida</p>";
+    echo "<p style=\'color: green;\'>✓ Conexão com banco de dados estabelecida</p>";
     
     $columnsAdded = [];
     $columnsExisting = [];
     
     // Lista de colunas para adicionar
     $columns = [
-        'cnpj' => function($table) {
-            $table->string('cnpj', 18)->nullable()->after('email');
+        \'cnpj\' => function($table) {
+            $table->string(\'cnpj\', 18)->nullable()->after(\'email\');
         },
-        'inscricao_estadual' => function($table) {
-            $table->string('inscricao_estadual', 20)->nullable()->after('cnpj');
+        \'inscricao_estadual\' => function($table) {
+            $table->string(\'inscricao_estadual\', 20)->nullable()->after(\'cnpj\');
         },
-        'celular' => function($table) {
-            $table->string('celular', 20)->nullable()->after('inscricao_estadual');
+        \'celular\' => function($table) {
+            $table->string(\'celular\', 20)->nullable()->after(\'inscricao_estadual\');
         },
-        'informacoes_credito' => function($table) {
-            $table->text('informacoes_credito')->nullable()->after('celular');
+        \'informacoes_credito\' => function($table) {
+            $table->text(\'informacoes_credito\')->nullable()->after(\'celular\');
         },
-        'caminho_foto' => function($table) {
-            $table->string('caminho_foto')->nullable()->after('informacoes_credito');
+        \'caminho_foto\' => function($table) {
+            $table->string(\'caminho_foto\')->nullable()->after(\'informacoes_credito\');
         },
-        'caminho_documentos' => function($table) {
-            $table->json('caminho_documentos')->nullable()->after('caminho_foto');
+        \'caminho_documentos\' => function($table) {
+            $table->json(\'caminho_documentos\')->nullable()->after(\'caminho_foto\');
         },
-        'endereco_completo' => function($table) {
-            $table->string('endereco_completo')->nullable()->after('caminho_documentos');
+        \'endereco_completo\' => function($table) {
+            $table->string(\'endereco_completo\')->nullable()->after(\'caminho_documentos\');
         },
-        'cep' => function($table) {
-            $table->string('cep', 10)->nullable()->after('endereco_completo');
+        \'cep\' => function($table) {
+            $table->string(\'cep\', 10)->nullable()->after(\'endereco_completo\');
         },
-        'latitude' => function($table) {
-            $table->decimal('latitude', 10, 8)->nullable()->after('cep');
+        \'latitude\' => function($table) {
+            $table->decimal(\'latitude\', 10, 8)->nullable()->after(\'cep\');
         },
-        'longitude' => function($table) {
-            $table->decimal('longitude', 11, 8)->nullable()->after('latitude');
+        \'longitude\' => function($table) {
+            $table->decimal(\'longitude\', 11, 8)->nullable()->after(\'latitude\');
         }
     ];
     
     // Adicionar cada coluna se não existir
     foreach ($columns as $columnName => $columnDefinition) {
-        if (!Schema::hasColumn('users', $columnName)) {
-            Schema::table('users', function (Blueprint $table) use ($columnDefinition) {
+        if (!Schema::hasColumn(\'users\', $columnName)) {
+            Schema::table(\'users\', function (Blueprint $table) use ($columnDefinition) {
                 $columnDefinition($table);
             });
             $columnsAdded[] = $columnName;
-            echo "<p style='color: green;'>✓ Coluna '$columnName' adicionada com sucesso</p>";
+            echo "<p style=\'color: green;\'>✓ Coluna \'$columnName\' adicionada com sucesso</p>";
         } else {
             $columnsExisting[] = $columnName;
-            echo "<p style='color: orange;'>⚠ Coluna '$columnName' já existe</p>";
+            echo "<p style=\'color: orange;\'>⚠ Coluna \'$columnName\' já existe</p>";
         }
     }
     
     // Registrar a migration como executada
-    $migrationName = '2025_10_14_184452_add_client_details_to_users_table';
-    $exists = DB::table('migrations')->where('migration', $migrationName)->exists();
+    $migrationName = \'2025_10_14_184452_add_client_details_to_users_table\';
+    $exists = DB::table(\'migrations\')->where(\'migration\', $migrationName)->exists();
     
     if (!$exists) {
-        $maxBatch = DB::table('migrations')->max('batch') ?? 0;
-        DB::table('migrations')->insert([
-            'migration' => $migrationName,
-            'batch' => $maxBatch + 1
+        $maxBatch = DB::table(\'migrations\')->max(\'batch\') ?? 0;
+        DB::table(\'migrations\')->insert([
+            \'migration\' => $migrationName,
+            \'batch\' => $maxBatch + 1
         ]);
-        echo "<p style='color: green;'>✓ Migration registrada no banco de dados</p>";
+        echo "<p style=\'color: green;\'>✓ Migration registrada no banco de dados</p>";
     } else {
-        echo "<p style='color: orange;'>⚠ Migration já estava registrada</p>";
+        echo "<p style=\'color: orange;\'>⚠ Migration já estava registrada</p>";
     }
     
     echo "<hr>";
@@ -104,8 +104,7 @@ try {
         echo "</ul>";
     }
     
-    echo "<p><strong>Colunas já existentes:</strong> " . count($columnsExisting) . "</p>
-";
+    echo "<p><strong>Colunas já existentes:</strong> " . count($columnsExisting) . "</p>";
     if (count($columnsExisting) > 0) {
         echo "<ul>";
         foreach ($columnsExisting as $col) {
@@ -115,11 +114,11 @@ try {
     }
     
     echo "<hr>";
-    echo "<p style='color: red; font-weight: bold;'>IMPORTANTE: Delete este arquivo agora!</p>";
+    echo "<p style=\'color: red; font-weight: bold;\'>IMPORTANTE: Delete este arquivo agora!</p>";
     echo "<p>Comando: <code>rm " . __FILE__ . "</code></p>";
     
 } catch (\Exception $e) {
-    echo "<p style='color: red;'>✗ Erro: " . $e->getMessage() . "</p>";
+    echo "<p style=\'color: red;\'>✗ Erro: " . $e->getMessage() . "</p>";
     echo "<pre>" . $e->getTraceAsString() . "</pre>";
 }
 

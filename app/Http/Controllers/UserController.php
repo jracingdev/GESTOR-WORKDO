@@ -587,6 +587,27 @@ class UserController extends Controller
         }
     }
 
+    public function LoginWithCompany($id)
+    {
+        if (\Auth::user()->isAbleTo("login as company")) {
+            $user = User::find($id);
+            if ($user) {
+                \Auth::user()->impersonate($user);
+                return redirect()->route("dashboard");
+            } else {
+                return redirect()->back()->with("error", __("User not found."));
+            }
+        } else {
+            return redirect()->back()->with("error", __("Permission denied."));
+        }
+    }
+
+    public function profile()
+    {
+        $user = \Auth::user();
+        return view('users.profile', compact('user'));
+    }
+
     public function UserUnable($id)
     {
         $user = User::find($id);
@@ -670,6 +691,8 @@ class UserController extends Controller
 
     public function mapView()
     {
+        \Log::info("User type: " . \Auth::user()->type);
+        \Log::info("User is able to user manage: " . (\Auth::user()->isAbleTo("user manage") ? "true" : "false"));
         if (\Auth::user()->isAbleTo("user manage")) {
             $users = User::whereNotNull("latitude")->whereNotNull("longitude")->get();
             return view("users.map", compact("users"));
