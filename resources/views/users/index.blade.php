@@ -240,7 +240,7 @@
                                     <p class="text-muted mb-0">{{ __("Workspaces") }}</p>
                                 </div>
                                 <div class="col-6 text-center">
-                                    <span class="text-dark">{{ $user->countUsers() }}</span>
+                                    <span class="text-dark">{{ $user->total_user }}</span>
                                     <p class="text-muted mb-0">{{ __("Users") }}</p>
                                 </div>
                             </div>
