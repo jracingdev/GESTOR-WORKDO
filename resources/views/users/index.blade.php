@@ -236,7 +236,7 @@
                             </div>
                             <div class="row mt-3">
                                 <div class="col-6 text-center">
-                                    <span class="text-dark">{{ $user->countWorkspace() }}</span>
+                                    <span class="text-dark">{{ $user->total_workspace }}</span>
                                     <p class="text-muted mb-0">{{ __("Workspaces") }}</p>
                                 </div>
                                 <div class="col-6 text-center">
