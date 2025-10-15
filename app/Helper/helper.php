@@ -454,6 +454,10 @@ if (!function_exists('module_is_active')) {
             if ($isModuleActive == false) {
                 return false;
             }
+            if (!Schema::hasTable('users')) {
+                return false;
+            }
+
             if (Auth::check()) {
                 $user = Auth::user();
             } else {
