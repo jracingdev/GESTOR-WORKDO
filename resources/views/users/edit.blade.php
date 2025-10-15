@@ -1,17 +1,24 @@
-{{Form::model($user,array('route' => array('users.update', $user->id), 'method' => 'PUT','class'=>'needs-validation','novalidate','enctype'=>'multipart/form-data')) }}
+
+{{Form::model($user,array(
+    'route' => array('users.update', $user->id),
+    'method' => 'PUT',
+    'class'=>'needs-validation',
+    'novalidate',
+    'enctype'=>'multipart/form-data'
+)) }}
     <div class="modal-body">
         <div class="row">
             @if(Auth::user()->type == 'super admin')
                 <div class="col-md-12">
                     <div class="form-group">
                         {{Form::label('name',__('Name'),['class'=>'form-label']) }}<x-required></x-required>
-                        {{Form::text('name',null,array('class'=>'form-control','placeholder'=>__('Enter Customer Name'),'required'=>'required'))}}
+                        {{Form::text('name',$user->name,array('class'=>'form-control','placeholder'=>__('Enter Customer Name'),'required'=>'required'))}}
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
                         {{Form::label('email',__('Email'),['class'=>'form-label'])}}<x-required></x-required>
-                        {{Form::email('email',null,array('class'=>'form-control','placeholder'=>__('Enter Customer Email'),'required'=>'required'))}}
+                        {{Form::email('email',$user->email,array('class'=>'form-control','placeholder'=>__('Enter Customer Email'),'required'=>'required'))}}
                     </div>
                 </div>
 
@@ -20,7 +27,7 @@
                     <div class="form-group">
                         {{Form::label('cnpj',__('CNPJ'),['class'=>'form-label'])}}
                         <div class="input-group">
-                            {{Form::text('cnpj',null,array('class'=>'form-control','placeholder'=>__('Enter CNPJ'),'id'=>'cnpj_input'))}}
+                            {{Form::text('cnpj',$user->cnpj,array('class'=>'form-control','placeholder'=>__('Enter CNPJ'),'id'=>'cnpj_input'))}}
                             <button type="button" class="btn btn-secondary" id="btn_buscar_cnpj">
                                 <i class="ti ti-search"></i> {{__('Search')}}
                             </button>
@@ -33,15 +40,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         {{Form::label('inscricao_estadual',__('State Registration'),['class'=>'form-label'])}}
-                        {{Form::text('inscricao_estadual',null,array('class'=>'form-control','placeholder'=>__('Enter State Registration'),'id'=>'inscricao_estadual'))}}
-                    </div>
-                </div>
-
-                <!-- Mobile Phone -->
-                <div class="col-md-12">
-                    <div class="form-group">
-                        {{Form::label('celular',__('Mobile Phone'),['class'=>'form-label'])}}
-                        {{Form::text('celular',null,array('class'=>'form-control','placeholder'=>__('(00) 00000-0000'),'id'=>'celular'))}}
+                        {{Form::text('inscricao_estadual',$user->inscricao_estadual,array('class'=>'form-control','placeholder'=>__('Enter State Registration'),'id'=>'inscricao_estadual'))}}
                     </div>
                 </div>
 
@@ -49,7 +48,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         {{Form::label('informacoes_credito',__('Credit Information'),['class'=>'form-label'])}}
-                        {{Form::textarea('informacoes_credito',null,array('class'=>'form-control','placeholder'=>__('Enter credit information, limits, payment terms, etc.'),'rows'=>'3'))}}
+                        {{Form::textarea('informacoes_credito',$user->informacoes_credito,array('class'=>'form-control','placeholder'=>__('Enter credit information, limits, payment terms, etc.'),'rows'=>'3'))}}
                     </div>
                 </div>
 
@@ -60,6 +59,10 @@
                         @if(!empty($user->caminho_foto))
                             <div class="mb-2">
                                 <img src="{{ asset('storage/'.$user->caminho_foto) }}" alt="Customer Photo" style="max-width: 150px; max-height: 150px; border-radius: 5px;">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" name="remove_foto" id="remove_foto" value="1">
+                                    <label class="form-check-label" for="remove_foto">{{__('Remove current photo')}}</label>
+                                </div>
                             </div>
                         @endif
                         {{Form::file('foto',array('class'=>'form-control','accept'=>'image/*'))}}
@@ -77,12 +80,18 @@
                                 <ul class="list-unstyled">
                                     @php
                                         $docs = json_decode($user->caminho_documentos, true);
-                                        if(is_array($docs)) {
-                                            foreach($docs as $doc) {
-                                                echo '<li><a href="'.asset('storage/'.$doc).'" target="_blank">'.basename($doc).'</a></li>';
-                                            }
-                                        }
                                     @endphp
+                                    @if(is_array($docs))
+                                        @foreach($docs as $index => $doc)
+                                            <li>
+                                                <a href="{{ asset('storage/'.$doc) }}" target="_blank">{{ basename($doc) }}</a>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="remove_documentos[]" id="remove_doc_{{ $index }}" value="{{ $doc }}">
+                                                    <label class="form-check-label" for="remove_doc_{{ $index }}">{{__('Remove')}}</label>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    @endif
                                 </ul>
                             </div>
                         @endif
@@ -97,17 +106,28 @@
                     <h5>{{__('Address Information')}}</h5>
                 </div>
 
-                <div class="col-md-8">
-                    <div class="form-group">
-                        {{Form::label('endereco_completo',__('Full Address'),['class'=>'form-label'])}}
-                        {{Form::text('endereco_completo',null,array('class'=>'form-control','placeholder'=>__('Street, Number, Neighborhood, City, State'),'id'=>'endereco_completo'))}}
-                    </div>
-                </div>
-
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('cep',__('ZIP Code'),['class'=>'form-label'])}}
-                        {{Form::text('cep',null,array('class'=>'form-control','placeholder'=>__('00000-000'),'id'=>'cep'))}}
+                        {{Form::text('cep',$user->cep,array('class'=>'form-control','placeholder'=>__('00000-000'),'id'=>'cep'))}}
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        {{Form::label('endereco_completo',__('Address'),['class'=>'form-label'])}}
+                        {{Form::text('endereco_completo',$user->endereco_completo,array('class'=>'form-control','placeholder'=>__('Street, Number, Neighborhood'),'id'=>'endereco_completo'))}}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{Form::label('cidade',__('City'),['class'=>'form-label'])}}
+                        {{Form::text('cidade',$user->cidade,array('class'=>'form-control','placeholder'=>__('Enter City'),'id'=>'cidade'))}}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{Form::label('estado',__('State'),['class'=>'form-label'])}}
+                        {{Form::text('estado',$user->estado,array('class'=>'form-control','placeholder'=>__('Enter State'),'id'=>'estado'))}}
                     </div>
                 </div>
 
@@ -124,32 +144,57 @@
                 </div>
 
                 <!-- Hidden fields for coordinates -->
-                {{Form::hidden('latitude',null,array('id'=>'latitude'))}}
-                {{Form::hidden('longitude',null,array('id'=>'longitude'))}}
+                {{Form::hidden('latitude',$user->latitude,array('id'=>'latitude'))}}
+                {{Form::hidden('longitude',$user->longitude,array('id'=>'longitude'))}}
 
             @else
                 <div class="col-md-12">
                     <div class="form-group">
                         {{Form::label('name',__('Name'),['class'=>'form-label']) }}<x-required></x-required>
-                        {{Form::text('name',null,array('class'=>'form-control','placeholder'=>__('Enter User Name'),'required'=>'required'))}}
+                        {{Form::text('name',$user->name,array('class'=>'form-control','placeholder'=>__('Enter User Name'),'required'=>'required'))}}
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
                         {{Form::label('email',__('Email'),['class'=>'form-label'])}}<x-required></x-required>
-                        {{Form::email('email',null,array('class'=>'form-control','placeholder'=>__('Enter User Email'),'required'=>'required'))}}
-                    </div>
-                </div>
-
-                <!-- Mobile Phone for non-super admin -->
-                <div class="col-md-12">
-                    <div class="form-group">
-                        {{Form::label('celular',__('Mobile Phone'),['class'=>'form-label'])}}
-                        {{Form::text('celular',null,array('class'=>'form-control','placeholder'=>__('(00) 00000-0000'),'id'=>'celular'))}}
+                        {{Form::email('email',$user->email,array('class'=>'form-control','placeholder'=>__('Enter User Email'),'required'=>'required'))}}
                     </div>
                 </div>
             @endif
+
+            <div class="col-md-12">
+                <div class="form-group">
+                    {{ Form::label('roles', __('Roles'),['class'=>'form-label']) }}<x-required></x-required>
+                    {{ Form::select('roles',$roles, null, ['class' => 'form-control','placeholder'=>'Select Role', 'id' => 'user_id','required'=>'required']) }}
+                    <div class=" text-xs mt-1">
+                        <span class="text-danger text-xs">{{ __('Unable to modify this user`s role. Please ensure that the correct role has been assigned to this user.') }}</span><br>
+                        {{ __('Create role here. ') }}
+                        <a href="{{ route('roles.index') }}"><b>{{ __('Create role') }}</b></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="form-group">
+                    {{Form::label('celular',__('Mobile Phone'),['class'=>'form-label'])}}
+                    {{Form::text('celular',$user->celular,array('class'=>'form-control','placeholder'=>__('(00) 00000-0000'),'id'=>'celular_input'))}}
+                </div>
+            </div>
             <x-mobile value="{{ !empty($user->mobile_no) ? $user->mobile_no : null }}"></x-mobile>
+
+            <div class="col-md-5 mb-3">
+                <label for="password_switch">{{ __('Login is enable') }}</label>
+                <div class="form-check form-switch custom-switch-v1 float-end">
+                    <input type="checkbox" name="password_switch" class="form-check-input input-primary pointer" value="on" id="password_switch" {{ company_setting('password_switch')=='on'?' checked ':'' }}>
+                    <label class="form-check-label" for="password_switch"></label>
+                </div>
+            </div>
+            <div class="col-md-12 ps_div d-none">
+                <div class="form-group">
+                    {{Form::label('password',__('Password'),['class'=>'form-label'])}}
+                    {{Form::password('password',array('class'=>'form-control','placeholder'=>__('Enter User Password'),'minlength'=>"6"))}}
+                </div>
+            </div>
         </div>
     </div>
     <div class="modal-footer">
@@ -177,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Mobile Phone Mask (DDD + Number)
-    const celularInput = document.getElementById('celular');
+    const celularInput = document.getElementById('celular_input');
     if (celularInput) {
         celularInput.addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
@@ -189,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // CEP Mask
+    // CEP Mask and Auto-fill
     const cepInput = document.getElementById('cep');
     if (cepInput) {
         cepInput.addEventListener('input', function(e) {
@@ -198,19 +243,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 value = value.replace(/^(\d{5})(\d)/, '$1-$2');
             }
             e.target.value = value;
-        });
 
-        // CEP Auto-fill
-        cepInput.addEventListener('blur', function(e) {
-            const cep = e.target.value.replace(/\D/g, '');
-            if (cep.length === 8) {
-                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            if (value.replace('-', '').length === 8) {
+                fetch(`https://viacep.com.br/ws/${value.replace('-', '')}/json/`)
                     .then(response => response.json())
                     .then(data => {
                         if (!data.erro) {
                             const enderecoInput = document.getElementById('endereco_completo');
                             if (enderecoInput && !enderecoInput.value) {
-                                enderecoInput.value = `${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}`;
+                                enderecoInput.value = `${data.logradouro || ''}, ${data.bairro || ''}`;
+                            }
+                            const cidadeInput = document.getElementById('cidade');
+                            if (cidadeInput && !cidadeInput.value) {
+                                cidadeInput.value = data.localidade;
+                            }
+                            const estadoInput = document.getElementById('estado');
+                            if (estadoInput && !estadoInput.value) {
+                                estadoInput.value = data.uf;
                             }
                         }
                     })
@@ -249,15 +298,24 @@ document.addEventListener('DOMContentLoaded', function() {
                             inscricaoInput.value = data.inscricao_estadual || '';
                         }
 
-                        const celularInputFill = document.getElementById('celular');
+                        const celularInputFill = document.getElementById('celular_input');
                         if (celularInputFill && data.ddd_telefone_1) {
-                            celularInputFill.value = data.ddd_telefone_1;
+                             celularInputFill.value = `(${data.ddd_telefone_1}) ${data.telefone_1 || ''}`.replace(/\D/g, '').replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d)/, '$1-$2');
                         }
 
                         const enderecoInput = document.getElementById('endereco_completo');
                         if (enderecoInput) {
-                            const endereco = `${data.logradouro || ''}, ${data.numero || ''}, ${data.bairro || ''}, ${data.municipio || ''} - ${data.uf || ''}`;
-                            enderecoInput.value = endereco;
+                            enderecoInput.value = `${data.logradouro || ''}, ${data.numero || 'S/N'}, ${data.bairro || ''}`;
+                        }
+                        
+                        const cidadeInputFill = document.getElementById('cidade');
+                        if (cidadeInputFill) {
+                            cidadeInputFill.value = data.municipio || '';
+                        }
+
+                        const estadoInputFill = document.getElementById('estado');
+                        if (estadoInputFill) {
+                            estadoInputFill.value = data.uf || '';
                         }
 
                         const cepInputFill = document.getElementById('cep');
@@ -290,6 +348,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize map if coordinates exist
     @if(!empty($user->latitude) && !empty($user->longitude))
         if (typeof L !== 'undefined') {
+            const mapContainer = document.getElementById('map_container');
+            mapContainer.style.display = 'block';
             map = L.map('customer_map').setView([{{ $user->latitude }}, {{ $user->longitude }}], 15);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
@@ -302,8 +362,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnShowMap) {
         btnShowMap.addEventListener('click', function() {
             const endereco = document.getElementById('endereco_completo').value;
-            if (!endereco) {
-                alert('Por favor, insira um endereço para visualizar no mapa.');
+            const cidade = document.getElementById('cidade').value;
+            const estado = document.getElementById('estado').value;
+            const fullAddress = `${endereco}, ${cidade}, ${estado}`;
+
+            if (!endereco || !cidade || !estado) {
+                alert('Por favor, insira um endereço, cidade e estado para visualizar no mapa.');
                 return;
             }
 
@@ -322,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Geocode address
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(endereco)}&countrycodes=br`)
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}&countrycodes=br`)
                 .then(response => response.json())
                 .then(data => {
                     if (data && data.length > 0) {
