@@ -1,0 +1,2 @@
+[16-Oct-2025 19:22:21 UTC] PHP Fatal error:  Cannot declare class Workdo\PDV\Providers\RouteServiceProvider, because the name is already in use in /home/jracing1/public_html/workdo.jracing.dev.br/packages/workdo/PDV/src/Providers/RouteServiceProvider.php on line 8
+[16-Oct-2025 19:23:30 UTC] PHP Fatal error:  Cannot declare class Workdo\PDV\Providers\RouteServiceProvider, because the name is already in use in /home/jracing1/public_html/workdo.jracing.dev.br/packages/workdo/PDV/src/Providers/RouteServiceProvider.php on line 8

@@ -4,16 +4,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Pagination Language Lines
+    | Linhas de Idioma para Paginação
     |--------------------------------------------------------------------------
     |
-    | The following language lines are used by the paginator library to build
-    | the simple pagination links. You are free to change them to anything
-    | you want to customize your views to better match your application.
+    | As seguintes linhas de idioma são usadas pela biblioteca do paginador para
+    | construir os links de paginação simples. Você é livre para alterá-las para
+    | o que quiser para personalizar suas visualizações para melhor corresponder
+    | à sua aplicação.
     |
     */
 
-    'previous' => '&laquo; Previous',
-    'next' => 'Next &raquo;',
+    'previous' => '&laquo; Anterior',
+    'next' => 'Próximo &raquo;',
 
 ];

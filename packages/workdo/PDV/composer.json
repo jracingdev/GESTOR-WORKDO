@@ -1,0 +1,26 @@
+{
+    "name": "workdo/PDV",
+    "description": "Description for pos package",
+    "type": "library",
+    "license": "MIT",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Workdo\\PDV\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "WorkDo",
+            "email": "support@workdo.io"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Workdo\\PDV\\Providers\\PDVServiceProvider",
+                "Workdo\\PDV\\Providers\\VendorPurchase"
+            ]
+        }
+    }
+}

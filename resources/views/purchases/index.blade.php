@@ -39,7 +39,7 @@
 <link rel="stylesheet" href="{{ asset('packages/workdo/Signature/src/Resources/assets/css/custom.css') }}">
 @endif
     @include('layouts.includes.datatable-css')
-    <link rel="stylesheet" href="{{ asset('packages/workdo/Pos/src/Resources/assets/css/custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('packages/workdo/PDV/src/Resources/assets/css/custom.css') }}">
 @endpush
 
 @section('page-action')
