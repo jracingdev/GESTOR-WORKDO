@@ -1,6 +1,6 @@
 <?php
 
-namespace Workdo\Pos\Listeners;
+namespace Workdo\PDV\Listeners;
 
 use App\Events\CompanyMenuEvent;
 
@@ -11,72 +11,72 @@ class CompanyMenuListener
      */
     public function handle(CompanyMenuEvent $event): void
     {
-        $module = 'Pos';
+        $module = 'PDV';
         $menu = $event->menu;
         $menu->add([
             'category' => 'General',
-            'title' => __('POS Dashboard'),
+            'title' => __('PDV Dashboard'),
             'icon' => '',
-            'name' => 'pos-dashboard',
+            'name' => 'pdv-dashboard',
             'parent' => 'dashboard',
             'order' => 40,
             'ignore_if' => [],
             'depend_on' => [],
             'route' => 'pos.dashboard',
             'module' => $module,
-            'permission' => 'pos dashboard manage'
+            'permission' => 'pdv dashboard manage'
         ]);
         $menu->add([
             'category' => 'Sales',
-            'title' => __('POS'),
+            'title' => __('PDV'),
             'icon' => 'grid-dots',
-            'name' => 'pos',
+            'name' => 'pdv',
             'parent' => null,
             'order' => 475,
             'ignore_if' => [],
             'depend_on' => [],
             'route' => '',
             'module' => $module,
-            'permission' => 'pos manage'
+            'permission' => 'pdv manage'
         ]);
 
 
         $menu->add([
             'category' => 'Sales',
-            'title' => __('Add POS'),
+            'title' => __('Add PDV'),
             'icon' => '',
-            'name' => 'add-pos',
-            'parent' => 'pos',
+            'name' => 'add-pdv',
+            'parent' => 'pdv',
             'order' => 20,
             'ignore_if' => [],
             'depend_on' => [],
-            'route' => 'pos.index',
+            'route' => 'pdv.index',
             'module' => $module,
-            'permission' => 'pos add manage'
+            'permission' => 'pdv add manage'
         ]);
         $menu->add([
             'category' => 'Sales',
-            'title' => __('POS Order'),
+            'title' => __('PDV Order'),
             'icon' => '',
-            'name' => 'pos-order',
-            'parent' => 'pos',
+            'name' => 'pdv-order',
+            'parent' => 'pdv',
             'order' => 25,
             'ignore_if' => [],
             'depend_on' => [],
-            'route' => 'pos.report',
+            'route' => 'pdv.report',
             'module' => $module,
-            'permission' => 'pos order manage'
+            'permission' => 'pdv order manage'
         ]);
         $menu->add([
             'category' => 'Sales',
             'title' => __('Print Barcode'),
             'icon' => '',
-            'name' => 'pos-print-barcode',
-            'parent' => 'pos',
+            'name' => 'pdv-print-barcode',
+            'parent' => 'pdv',
             'order' => 30,
             'ignore_if' => [],
             'depend_on' => [],
-            'route' => 'pos.barcode',
+            'route' => 'pdv.barcode',
             'module' => $module,
             'permission' => 'print_barcode manage'
         ]);
@@ -84,42 +84,42 @@ class CompanyMenuListener
             'category' => 'Sales',
             'title' => __('Report'),
             'icon' => '',
-            'name' => 'pos-reports',
-            'parent' => 'pos',
+            'name' => 'pdv-reports',
+            'parent' => 'pdv',
             'order' => 35,
             'ignore_if' => [],
             'depend_on' => [],
             'route' => '',
             'module' => $module,
-            'permission' => 'report pos'
+            'permission' => 'report pdv'
         ]);
 
 
         $menu->add([
             'category' => 'Sales',
-            'title' => __('Pos Daily/Monthly Report'),
+            'title' => __('PDV Daily/Monthly Report'),
             'icon' => '',
-            'name' => 'pos-report',
-            'parent' => 'pos-reports',
+            'name' => 'pdv-report',
+            'parent' => 'pdv-reports',
             'order' => 20,
             'ignore_if' => [],
             'depend_on' => [],
-            'route' => 'report.daily.pos',
+            'route' => 'report.daily.pdv',
             'module' => $module,
-            'permission' => 'report pos'
+            'permission' => 'report pdv'
         ]);
         $menu->add([
             'category' => 'Sales',
-            'title' => __('Pos VS Purchase Report'),
+            'title' => __('PDV VS Purchase Report'),
             'icon' => '',
-            'name' => 'pos-vs-purchase-report',
-            'parent' => 'pos-reports',
+            'name' => 'pdv-vs-purchase-report',
+            'parent' => 'pdv-reports',
             'order' => 25,
             'ignore_if' => [],
             'depend_on' => [],
-            'route' => 'report.pos.vs.purchase',
+            'route' => 'report.pdv.vs.purchase',
             'module' => $module,
-            'permission' => 'report pos vs expense'
+            'permission' => 'report pdv vs expense'
         ]);
     }
 }

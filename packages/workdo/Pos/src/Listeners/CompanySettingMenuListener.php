@@ -1,6 +1,6 @@
 <?php
 
-namespace Workdo\Pos\Listeners;
+namespace Workdo\PDV\Listeners;
 
 use App\Events\CompanySettingMenuEvent;
 
@@ -11,30 +11,30 @@ class CompanySettingMenuListener
      */
     public function handle(CompanySettingMenuEvent $event): void
     {
-        $module = 'Pos';
+        $module = 'PDV';
         $menu = $event->menu;
         $menu->add([
-            'title' => __('POS Settings'),
-            'name' => 'pos-setting',
+            'title' => __('PDV Settings'),
+            'name' => 'pdv-setting',
             'order' => 180,
             'ignore_if' => [],
             'depend_on' => [],
             'route' => '',
-            'navigation' => 'pos-sidenav',
+            'navigation' => 'pdv-sidenav',
             'module' => $module,
-            'permission' => 'pos setting manage'
+            'permission' => 'pdv setting manage'
         ]);
 
         $menu->add([
-            'title' => __('Pos Print Settings'),
-            'name' => 'pos-print-setting',
+            'title' => __('PDV Print Settings'),
+            'name' => 'pdv-print-setting',
             'order' => 200,
             'ignore_if' => [],
             'depend_on' => [],
             'route' => '',
-            'navigation' => 'pos-print-sidenav',
+            'navigation' => 'pdv-print-sidenav',
             'module' => $module,
-            'permission' => 'pos setting manage'
+            'permission' => 'pdv setting manage'
         ]);
     }
 }
