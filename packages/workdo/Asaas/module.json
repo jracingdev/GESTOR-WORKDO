@@ -1,0 +1,1 @@
+{"name": "Asaas", "alias": "asaas", "description": "Módulo de Pagamento Asaas", "keywords": ["asaas", "pagamento", "addon"], "active": 1, "order": 0, "providers": ["Workdo\\\\Asaas\\\\Providers\\\\AsaasServiceProvider"]}
