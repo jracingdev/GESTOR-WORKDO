@@ -1,0 +1,11 @@
+{
+    "name": "TaxOptimizer",
+    "alias": "taxoptimizer",
+    "description": "Sistema de Inteligência Artificial para Otimização Tributária e Recuperação de Créditos.",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Workdo\\TaxOptimizer\\Providers\\TaxOptimizerServiceProvider"
+    ],
+    "files": []
+}
