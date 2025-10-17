@@ -279,6 +279,13 @@ class ProductServiceController extends Controller
                 'unit_id' => 'required',
                 'type' => 'required',
                 'tax_id' => 'required',
+                'ncm' => 'nullable|string|max:10',
+                'cest' => 'nullable|string|max:10',
+                'cfop' => 'nullable|string|max:5',
+                'cst_icms' => 'nullable|string|max:3',
+                'cst_ipi' => 'nullable|string|max:2',
+                'cst_pis' => 'nullable|string|max:2',
+                'cst_cofins' => 'nullable|string|max:2',
             ];
 
             $validator = \Validator::make($request->all(), $rules);
@@ -294,6 +301,13 @@ class ProductServiceController extends Controller
             $productService->name           = $request->name;
             $productService->description    = $request->description;
             $productService->sku            = $request->sku;
+            $productService->ncm            = $request->ncm;
+            $productService->cest           = $request->cest;
+            $productService->cfop           = $request->cfop;
+            $productService->cst_icms       = $request->cst_icms;
+            $productService->cst_ipi        = $request->cst_ipi;
+            $productService->cst_pis        = $request->cst_pis;
+            $productService->cst_cofins     = $request->cst_cofins;
             if ($request->hasFile('image')) {
                 $name = time() . "_" . $request->image->getClientOriginalName();
                 $path = upload_file($request, 'image', $name, 'products');
@@ -469,6 +483,13 @@ class ProductServiceController extends Controller
                 'unit_id' => 'required',
                 'type' => 'required',
                 'tax_id' => 'required',
+                'ncm' => 'nullable|string|max:10',
+                'cest' => 'nullable|string|max:10',
+                'cfop' => 'nullable|string|max:5',
+                'cst_icms' => 'nullable|string|max:3',
+                'cst_ipi' => 'nullable|string|max:2',
+                'cst_pis' => 'nullable|string|max:2',
+                'cst_cofins' => 'nullable|string|max:2',
 
             ];
 
@@ -492,6 +513,13 @@ class ProductServiceController extends Controller
             $productService->name           = $request->name;
             $productService->description    = $request->description;
             $productService->sku            = $request->sku;
+            $productService->ncm            = $request->ncm;
+            $productService->cest           = $request->cest;
+            $productService->cfop           = $request->cfop;
+            $productService->cst_icms       = $request->cst_icms;
+            $productService->cst_ipi        = $request->cst_ipi;
+            $productService->cst_pis        = $request->cst_pis;
+            $productService->cst_cofins     = $request->cst_cofins;
             $productService->sale_price     = $request->sale_price;
             $productService->purchase_price = $request->purchase_price;
             $productService->tax_id         = !empty($request->tax_id) ? implode(',', $request->tax_id) : '';

@@ -52,9 +52,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         {{ Form::label('name', __('Name'), ['class' => 'form-label']) }}<x-required></x-required>
-                                        <div class="form-icon-user">
-                                            {{ Form::text('name', !empty($productService->name)?$productService->name:'', ['class' => 'form-control','required' => 'required', 'placeholder' => __('Enter Name')]) }}
-                                        </div>
+
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -112,9 +110,231 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         {{ Form::label('sale_price', __('Sale Price'), ['class' => 'form-label']) }}<x-required></x-required>
-                                        <div class="form-icon-user">
-                                            {{ Form::number('sale_price', !empty($productService->sale_price)?$productService->sale_price:'', ['class' => 'form-control', 'step' => '0.01','required' => 'required', 'placeholder' => __('Enter Sale Price')]) }}
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label("sku", __("SKU"), ["class" => "form-label"]) }}<x-required></x-required>
+                                        <div class="input-group">
+                                            {{ Form::text("sku", !empty($productService->sku)?$productService->sku:"", ["class" => "form-control","required" => "required", "placeholder" => __("Enter SKU")]) }}
+                                            <button class="btn btn-outline-primary" type="button" onclick="generateSKU()">{{__("Generate")}}</button>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label("ncm", __("NCM (Fiscal)"), ["class" => "form-label"]) }}
+                                        {{ Form::text("ncm", !empty($productService->ncm)?$productService->ncm:"", ["class" => "form-control", "placeholder" => __("Enter NCM")]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label("cest", __("CEST (Fiscal)"), ["class" => "form-label"]) }}
+                                        {{ Form::text("cest", !empty($productService->cest)?$productService->cest:"", ["class" => "form-control", "placeholder" => __("Enter CEST")]) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label("cfop", __("CFOP (Fiscal)"), ["class" => "form-label"]) }}
+                                        {{ Form::text("cfop", !empty($productService->cfop)?$productService->cfop:"", ["class" => "form-control", "placeholder" => __("Enter CFOP")]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label("cst_icms", __("CST ICMS"), ["class" => "form-label"]) }}
+                                        {{ Form::text("cst_icms", !empty($productService->cst_icms)?$productService->cst_icms:"", ["class" => "form-control", "placeholder" => __("Enter CST ICMS")]) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ Form::label("cst_ipi", __("CST IPI"), ["class" => "form-label"]) }}
+                                        {{ Form::text("cst_ipi", !empty($productService->cst_ipi)?$productService->cst_ipi:"", ["class" => "form-control", "placeholder" => __("Enter CST IPI")]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ Form::label("cst_pis", __("CST PIS"), ["class" => "form-label"]) }}
+                                        {{ Form::text("cst_pis", !empty($productService->cst_pis)?$productService->cst_pis:"", ["class" => "form-control", "placeholder" => __("Enter CST PIS")]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ Form::label("cst_cofins", __("CST COFINS"), ["class" => "form-label"]) }}
+                                        {{ Form::text("cst_cofins", !empty($productService->cst_cofins)?$productService->cst_cofins:"", ["class" => "form-control", "placeholder" => __("Enter CST COFINS")]) }}
+                                    </div>
+                                </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('sku', __('SKU'), ['class' => 'form-label']) }}<x-required></x-requir                                    <div class="form-icon-user">
+                                            {{ Form::text('name', !empty($productService->name)?$productService->name:'', ['class' => 'form-control','required' => 'required', 'placeholder' => __('Enter Name')]) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('sku', __('SKU'), ['class' => 'form-label']) }}<x-required></x-required>
+                                        <div class="input-group">
+                                            {{ Form::text('sku', !empty($productService->sku)?$productService->sku:'', ['class' => 'form-control','required' => 'required', 'placeholder' => __('Enter SKU')]) }}
+                                            <button class="btn btn-outline-primary" type="button" onclick="generateSKU()">{{__('Generate')}}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('ncm', __('NCM (Fiscal)'), ['class' => 'form-label']) }}
+                                        {{ Form::text('ncm', !empty($productService->ncm)?$productService->ncm:'', ['class' => 'form-control', 'placeholder' => __('Enter NCM')]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('cest', __('CEST (Fiscal)'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cest', !empty($productService->cest)?$productService->cest:'', ['class' => 'form-control', 'placeholder' => __('Enter CEST')]) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('cfop', __('CFOP (Fiscal)'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cfop', !empty($productService->cfop)?$productService->cfop:'', ['class' => 'form-control', 'placeholder' => __('Enter CFOP')]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('cst_icms', __('CST ICMS'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cst_icms', !empty($productService->cst_icms)?$productService->cst_icms:'', ['class' => 'form-control', 'placeholder' => __('Enter CST ICMS')]) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ Form::label('cst_ipi', __('CST IPI'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cst_ipi', !empty($productService->cst_ipi)?$productService->cst_ipi:'', ['class' => 'form-control', 'placeholder' => __('Enter CST IPI')]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ Form::label('cst_pis', __('CST PIS'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cst_pis', !empty($productService->cst_pis)?$productService->cst_pis:'', ['class' => 'form-control', 'placeholder' => __('Enter CST PIS')]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ Form::label('cst_cofins', __('CST COFINS'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cst_cofins', !empty($productService->cst_cofins)?$productService->cst_cofins:'', ['class' => 'form-control', 'placeholder' => __('Enter CST COFINS')]) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('ncm', __('NCM (Fiscal)'), ['class' => 'form-label']) }}
+                                        {{ Form::text('ncm', !empty($productService->ncm)?$productService->ncm:'', ['class' => 'form-control', 'placeholder' => __('Enter NCM')]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('cest', __('CEST (Fiscal)'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cest', !empty($productService->cest)?$productService->cest:'', ['class' => 'form-control', 'placeholder' => __('Enter CEST')]) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('cfop', __('CFOP (Fiscal)'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cfop', !empty($productService->cfop)?$productService->cfop:'', ['class' => 'form-control', 'placeholder' => __('Enter CFOP')]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('cst_icms', __('CST ICMS'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cst_icms', !empty($productService->cst_icms)?$productService->cst_icms:'', ['class' => 'form-control', 'placeholder' => __('Enter CST ICMS')]) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ Form::label('cst_ipi', __('CST IPI'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cst_ipi', !empty($productService->cst_ipi)?$productService->cst_ipi:'', ['class' => 'form-control', 'placeholder' => __('Enter CST IPI')]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ Form::label('cst_pis', __('CST PIS'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cst_pis', !empty($productService->cst_pis)?$productService->cst_pis:'', ['class' => 'form-control', 'placeholder' => __('Enter CST PIS')]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ Form::label('cst_cofins', __('CST COFINS'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cst_cofins', !empty($productService->cst_cofins)?$productService->cst_cofins:'', ['class' => 'form-control', 'placeholder' => __('Enter CST COFINS')]) }}
+                                    </div>
+                                </div>button class="btn btn-outline-primary" type="button" onclick="generateSKU()">{{__('Generate')}}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('ncm', __('NCM (Fiscal)'), ['class' => 'form-label']) }}
+                                        {{ Form::text('ncm', !empty($productService->ncm)?$productService->ncm:'', ['class' => 'form-control', 'placeholder' => __('Enter NCM')]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('cest', __('CEST (Fiscal)'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cest', !empty($productService->cest)?$productService->cest:'', ['class' => 'form-control', 'placeholder' => __('Enter CEST')]) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('cfop', __('CFOP (Fiscal)'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cfop', !empty($productService->cfop)?$productService->cfop:'', ['class' => 'form-control', 'placeholder' => __('Enter CFOP')]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ Form::label('cst_icms', __('CST ICMS'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cst_icms', !empty($productService->cst_icms)?$productService->cst_icms:'', ['class' => 'form-control', 'placeholder' => __('Enter CST ICMS')]) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ Form::label('cst_ipi', __('CST IPI'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cst_ipi', !empty($productService->cst_ipi)?$productService->cst_ipi:'', ['class' => 'form-control', 'placeholder' => __('Enter CST IPI')]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ Form::label('cst_pis', __('CST PIS'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cst_pis', !empty($productService->cst_pis)?$productService->cst_pis:'', ['class' => 'form-control', 'placeholder' => __('Enter CST PIS')]) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ Form::label('cst_cofins', __('CST COFINS'), ['class' => 'form-label']) }}
+                                        {{ Form::text('cst_cofins', !empty($productService->cst_cofins)?$productService->cst_cofins:'', ['class' => 'form-control', 'placeholder' => __('Enter CST COFINS')]) }}
+                                    </div>
+                                </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
